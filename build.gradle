@@ -1,0 +1,38 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+group 'com.dronedelivery'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    reports {
+        junitXml.enabled = false
+        html.enabled = true
+    }
+}
+
+//allow creation of a fat jar for standalone running capability
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Reservation Application Fat Jar',
+                'Implementation-Version': version,
+                'Main-Class': 'com.mkyong.DateUtils'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile 'log4j:log4j:1.2.17'
+    compile 'commons-logging:commons-logging:1.2'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+mainClassName = 'com.dronedelivery.DroneScheduler'
