@@ -13,7 +13,8 @@ The application can be run as follows
 The build can be cleaned as follows
 
 - `gradle clean`
-*If gradle is not installed on your system the above commands can be run using gradlew (part of the repo)
+
+* If gradle is not installed on your system the above commands can be run using gradlew (part of the repo)
 
 The application implements logging using the log4j library. The log configuration is available in log4j.properties file in resources directory.
 
