@@ -47,6 +47,7 @@ Once packaged as a fat jar it can be run as a standalone java application
 
 ## Tests
 
-See ReservationAppTest class for test examples Tests should be run using gradle
+See DroneDeliveryAppTest class for test examples. 
+Tests should be run using gradle
 gradle test Test reports are generated in build/reports/tests/test/classes directory
 All tests are run everytime a gradle build command is run
