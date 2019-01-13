@@ -1,4 +1,4 @@
-##Building and Running the application
+## Building and Running the application
 The application can be downloaded using the following command
 
 git clone https://github.com/skurdekar/dronedelivery.git
@@ -8,7 +8,7 @@ gradle build
 The application can be run as follows
 
 gradle run --args=<filepath>
-gradle run --args='/Users/skurdekar/devSandBox/dronedelivery/droneOrderInput.txt'
+gradle run --args='droneOrderInput.txt'
 
 The build can be cleaned as follows
 
@@ -24,7 +24,7 @@ Once packaged as a fat jar it can be run as a standalone java application
 
 java -classpath build/libs/dronedelivery-all-1.0.jar com.dronedelivery.DroneScheduler <inputFilePath>
 
-**Tests**
+## Tests
 
 See ReservationAppTest class for test examples Tests should be run using gradle
 gradle test Test reports are generated in build/reports/tests/test/classes directory
