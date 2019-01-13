@@ -1,7 +1,7 @@
 ## Building and Running the application
 The application can be downloaded using the following command
 
-- `git clone https://github.com/skurdekar/dronedelivery.git`
+- `git clone https://github.com/skurdekar/DroneDelivery.git`
 The application is packaged with the Gradle Build Tool. It can be built using the following command
 
 - `gradle build`
