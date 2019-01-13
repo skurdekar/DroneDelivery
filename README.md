@@ -1,4 +1,4 @@
-**Building and Running the application**
+##Building and Running the application
 The application can be downloaded using the following command
 
 git clone https://github.com/skurdekar/dronedelivery.git
