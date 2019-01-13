@@ -70,12 +70,10 @@ public class Location {
         if(squareMinutes > 0) {
             long squareSecs = squareMinutes*3600; //convert to sec sq
             retVal = Float.valueOf(DEC_FORMAT.format(Math.sqrt(squareSecs)));
-            logger.debug("location: " + location + " delivery time: " + retVal);
+            logger.debug("location: " + location + " delivery time(secs): " + retVal);
         } else {
             throw new IllegalArgumentException("Invalid location :" + location);
         }
-
-
         return Math.round(retVal); //round to nearest integer
     }
 
