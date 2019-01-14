@@ -3,16 +3,15 @@ The application can be downloaded using the following command (sample input file
 
 - `git clone https://github.com/skurdekar/DroneDelivery.git`
 The application is packaged with the Gradle Build Tool. It can be built using the following command
-
 - `gradle build`
-The application can be run as follows (using sample input)
 
+The application can be run as follows (using sample input)
 - `gradle run --args=<filepath>`
 - `gradle run --args='droneOrderInput.txt'`
+
 Input file lines starting with `#` are ignored.
 
 The build can be cleaned as follows
-
 - `gradle clean`
 
 * If gradle is not installed on your system the above commands can be run using *gradlew* (part of the repo)
