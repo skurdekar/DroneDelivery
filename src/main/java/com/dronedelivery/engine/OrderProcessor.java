@@ -33,7 +33,12 @@ public class OrderProcessor {
             }
         }catch(Exception ex){
             logger.error("createOrder: Exception adding order ", ex);
-            rejectOrder(RejectedOrder.RejectReason.INVALID_PARAMS, orderStr);
+            if(ex instanceof IllegalArgumentException &&
+                    RejectedOrder.RejectReason.LOCATION_TOO_FAR.toString().equals(ex.getMessage())){
+                rejectOrder(RejectedOrder.RejectReason.LOCATION_TOO_FAR, orderStr);
+            }else{
+                rejectOrder(RejectedOrder.RejectReason.INVALID_PARAMS, orderStr);
+            }
         }
     }
 
@@ -57,7 +62,7 @@ public class OrderProcessor {
                 processedList.add(order);
                 prevOrder = order;
             }else{
-                rejectOrder(RejectedOrder.RejectReason.TOO_FAR, order.getOrderStr());
+                rejectOrder(RejectedOrder.RejectReason.LOCATION_TOO_FAR, order.getOrderStr());
             }
             if(prevOrder != null) {
                 order = getNextOrder(prevOrder.getDroneReturnTime());
@@ -82,11 +87,7 @@ public class OrderProcessor {
 
     public void writeOutput() {
         OrderFileProcessor.getInstance().writeOrderOutput(processedList, NPS);
-
-        //TODO write to rejects file
-        for (RejectedOrder aRejectedList : rejectedList) {
-            logger.info(aRejectedList);//just print rejected orders for now
-        }
+        OrderFileProcessor.getInstance().writeOrderRejects(rejectedList);
     }
 
     public ArrayList<Order> getProcessedOrders(){
@@ -132,14 +133,33 @@ public class OrderProcessor {
     private void calculateNPS() {
         int promoterCount = 0;
         int detractorCount = 0;
+        float promoterScore = 0;
+        float detractorScore = 0;
         for (Order order : processedList) {
             if (order.isPromoter()) {
                 promoterCount++;
+                promoterScore += order.getNPS();
             } else if (order.isDetractor()) {
                 detractorCount++;
+                detractorScore += order.getNPS();
             }
         }
-        NPS = Math.round((promoterCount * 100f) / processedList.size()) - Math.round((detractorCount * 100f) / processedList.size());
+
+        for (RejectedOrder order : rejectedList) {
+            if(order.getReason().equals(RejectedOrder.RejectReason.LOCATION_TOO_FAR)){
+                detractorCount++;
+                detractorScore += 0;
+            }
+        }
+        int sampleSize = promoterCount + detractorCount;
+        promoterScore = (promoterScore/sampleSize)*10;
+        if(detractorCount > 0) {
+            detractorScore = ((10 - detractorScore)/sampleSize) * 10;
+        }
+        NPS = Math.round(promoterScore - detractorScore);
+
+        //int sampleSize = processedList.size() + rejectedList.size();
+        //NPS = Math.round((promoterCount * 100f) / sampleSize) - Math.round((detractorCount * 100f) / sampleSize);
         logger.info("calculateNPS: NPS: " + NPS);
     }
 

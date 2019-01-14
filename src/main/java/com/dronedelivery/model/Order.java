@@ -141,6 +141,10 @@ public class Order {
         logger.debug("OrderId: " + orderId + " NPS: " + nps);
     }
 
+    public float getNPS(){
+        return nps;
+    }
+
     public boolean isPromoter(){
         return nps > 8.5;
     }

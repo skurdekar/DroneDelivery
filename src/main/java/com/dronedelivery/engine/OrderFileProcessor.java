@@ -61,4 +61,22 @@ public class OrderFileProcessor {
             logger.error("Could not write to output file: " + Config.getOutputFile(), ex);
         }
     }
+
+    /**
+     * Write output file
+     * @param rejectedList ArrayList containing processed orders
+     */
+    public void writeOrderRejects(ArrayList<RejectedOrder> rejectedList){
+        try (PrintWriter writer = new PrintWriter(Config.getRejectFile())){
+            for(RejectedOrder order: rejectedList) {
+                writer.write(order + "\n");
+            }
+            if(rejectedList.size() > 0) {
+                logger.info("DroneDelivery: successfully wrote rejects to " + Config.getRejectFile());
+            }
+        }catch(Exception ex){
+            logger.error("Could not write to rejects file: " + Config.getRejectFile(), ex);
+        }
+    }
+
 }

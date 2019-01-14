@@ -18,6 +18,8 @@ public class Config {
     private static String INPUT_PATH;
     private static String OUTPUT_PATH = System.getProperty("user.home") + File.separator + "droneDeliveryOut" + File.separator;
     private static final String OUTPUT_FILE = OUTPUT_PATH + "droneDeliveryOut.txt";
+    private static final String REJECT_FILE = OUTPUT_PATH + "droneDeliveryRejects.txt";
+
     private static Date OPEN_TIME;
     private static Date CLOSE_TIME;
 
@@ -40,9 +42,11 @@ public class Config {
         return OUTPUT_PATH;
     }
 
-    public static String getOutputFile() {
-        return OUTPUT_FILE;
+    public static String getRejectFile() {
+        return REJECT_FILE;
     }
+
+    public static String getOutputFile() { return OUTPUT_FILE; }
 
     public static void parseCommandLine(String argv[]){
         if(argv.length < 1){
