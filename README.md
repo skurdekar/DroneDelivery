@@ -41,7 +41,7 @@ The application implements logging using the log4j library. The log configuratio
 
 Alternatively the application can be packaged as a fat jar
 
-- `./gradlew fatJar`
+- `./gradlew clean build fatJar`
 Once packaged as a fat jar it can be run as a standalone java application
 
 - `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath>`
@@ -79,7 +79,24 @@ Currently the application outputs log4j formatted messages set to DEBUG level (i
 
 See DroneDeliveryAppTest class for test examples. Currently i have only added 3 test cases and will possibly add more as time permits.
 Test reports are generated in build/reports/tests/test/classes directory
-All tests are run everytime a gradle build command is run
+All tests are run everytime a gradle clean build command is run. Sample test output is included below
+
+```
+DroneDeliveryAppTest > testDispatchTime STARTED
+Executing test testDispatchTime [DroneDeliveryAppTest] with result: SUCCESS
+
+DroneDeliveryAppTest > testDispatchTime PASSED
+
+DroneDeliveryAppTest > testInvalidOrderParam STARTED
+Executing test testInvalidOrderParam [DroneDeliveryAppTest] with result: SUCCESS
+
+DroneDeliveryAppTest > testInvalidOrderParam PASSED
+
+DroneDeliveryAppTest > testTooFar STARTED
+Executing test testTooFar [DroneDeliveryAppTest] with result: SUCCESS
+
+DroneDeliveryAppTest > testTooFar PASSED
+```
 
 ## Logic & Assumptions
 
