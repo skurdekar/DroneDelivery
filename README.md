@@ -47,6 +47,8 @@ Once packaged as a fat jar it can be run as a standalone java application
 - `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath>`
 
 ## Output
+Currently the application outputs log4j formatted messages set to DEBUG level (in log4j.properties file). Both the console and file output are set to the same level. Sample output is included below. The output file is presented as the last line of the output and is not configurable at this time.
+
 ```
     output file path: /Users/skurdekar/droneDeliveryOut/
     location: N11W5 delivery time: 724.98
@@ -68,9 +70,9 @@ Once packaged as a fat jar it can be run as a standalone java application
     calculateNPS: NPS: 75
     DroneDelivery: successfully wrote output to /Users/skurdekar/droneDeliveryOut/droneDeliveryOut.txt
 ```
-#### Output file is written to `${userhome}/droneDeliveryOut/droneDeliveryOut.txt`
+#### Output file(not configurable) is located at `${userhome}/droneDeliveryOut/droneDeliveryOut.txt`
 
-#### Rejects file is written to `${userhome}/droneDeliveryOut/droneDeliveryRejects.txt`
+#### Rejects file(not configurable) is located at `${userhome}/droneDeliveryOut/droneDeliveryRejects.txt`
 
 ## Unit Tests
 
