@@ -1,7 +1,7 @@
 
 ## Building and Running the application
 
-### The application has been built and tested in a `Java 10` runtime. Ensure that Java 10 is installed on your machine prior to downloading the repository
+#### The application has been built and tested in a `Java 10` runtime. Ensure that Java 10 is installed on your machine prior to downloading the repository
 
 The application can be downloaded using the following command (sample input file droneOrderInput.txt is provided)
 
