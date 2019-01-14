@@ -52,3 +52,14 @@ See DroneDeliveryAppTest class for test examples.
 Tests should be run using gradle
 gradle test Test reports are generated in build/reports/tests/test/classes directory
 All tests are run everytime a gradle build command is run
+
+## Logic & Assumptions
+
+## Drone Operating Area
+Since the Drone dispatch center is only open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to make sure the Drone gets back in 16 hours. The operating distance will be limited to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed invalid and the order will not be processed
+
+## Assumption: Deliveries that cannot be processed the same day will be rejected
+Prior to scheduling delivery the scheduler ensures that the Drone can be back before the operating center closes (10 pm). Any orders that cannot be processed will be rejected and stored in a reject file droneDeliveryRejects.txt (in the same directory as output file). All rejects will be considered incomplete orders and can be set for manual process the next day. The handling of rejects is beyond the scope of this solution.
+
+## Solution will not handle rolling over undelivered orders to next day
+for NPS calculation rejected orders will be considered to have a 0 NPS Score
