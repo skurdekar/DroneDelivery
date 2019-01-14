@@ -62,4 +62,17 @@ Since the Drone dispatch center is only open for 16 hours every day (from 6 am t
 Prior to scheduling delivery the scheduler ensures that the Drone can be back before the operating center closes (10 pm). Any orders that cannot be processed will be rejected and stored in a reject file droneDeliveryRejects.txt (in the same directory as output file). All rejects will be considered incomplete orders and can be set for manual process the next day. The handling of rejects is beyond the scope of this solution.
 
 ## Solution will not handle rolling over undelivered orders to next day
-for NPS calculation rejected orders will be considered to have a 0 NPS Score
+For NPS calculation rejected orders will be considered to have a 0 NPS Score
+
+## Invalid parameters in input file
+If the file contains bad data the order will be rejected and count against NPS calculation as a detractor with the worst score.
+
+## NPS Calculation
+NPS Calculation will be done using the following formula
+`Total promoter recommendation/(promoters + detractors) *10 - Total detractor recommendation/(promoters + detractors)*10`
+It is not completely clear from the description what the intended logic should be as per the example.
+
+## Next Steps
+1)The problem poses a significant scheduling challenge at scale. Drones will need to be shared with possible Drone overlapp areas using circular regions. Shared drones will need to work off of concurrent order queues. Calculation can be based on how much a drone can travel in a particular day.
+
+2)Enhanced unit test will need to be added for border and edge case scenarios.
