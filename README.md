@@ -47,9 +47,9 @@ Once packaged as a fat jar it can be run as a standalone java application
     calculateNPS: NPS: 75
     DroneDelivery: successfully wrote output to /Users/skurdekar/droneDeliveryOut/droneDeliveryOut.txt
 ```
-#### Output file is written to `userhome/droneDeliveryOut/droneDeliveryOut.txt`
+#### Output file is written to `${userhome}/droneDeliveryOut/droneDeliveryOut.txt`
 
-#### Rejects file is written to `userhome/droneDeliveryOut/droneDeliveryRejects.txt`
+#### Rejects file is written to `${userhome}/droneDeliveryOut/droneDeliveryRejects.txt`
 
 ## Unit Tests
 
