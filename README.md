@@ -75,10 +75,10 @@ Currently the application outputs log4j formatted messages set to DEBUG level (i
 #### Rejects file(not configurable) is located at `${userhome}/droneDeliveryOut/droneDeliveryRejects.txt`
 
 ## Unit Tests
+- `./gradlew clean test`
 
-See DroneDeliveryAppTest class for test examples. 
-Tests should be run using gradle
-gradle test Test reports are generated in build/reports/tests/test/classes directory
+See DroneDeliveryAppTest class for test examples. Currently i have only added 3 test cases and will possibly add more as time permits.
+Test reports are generated in build/reports/tests/test/classes directory
 All tests are run everytime a gradle build command is run
 
 ## Logic & Assumptions
