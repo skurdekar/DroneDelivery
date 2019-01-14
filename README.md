@@ -1,3 +1,4 @@
+
 ## Building and Running the application
 The application can be downloaded using the following command (sample input file droneOrderInput.txt is provided)
 
@@ -61,10 +62,10 @@ All tests are run everytime a gradle build command is run
 ## Logic & Assumptions
 
 ### Logic used to Schedule the Drone and pick the next Order
-The orders are scheduled based on least time to delivery from the time of order placement. This includes wait time in case an order is placed before the facility opens. In case an order is placed after the facility opens, but takes lesser time than an order already in queue it will be scheduled ahead of the older order. The time to delivery is the diagnoal distance (hypotenuse) of the triangle with NS and EW co-ordinates. Based on the example provided it was clear that the Drone can travel diagonally to deliver an order.
+The orders are scheduled based on least total time to delivery from the time of order placement. This includes wait time in case an order is placed before the facility opens plus the drone delivery time. In case an order is placed after the facility opens, but takes lesser time to deliver than an order already in queue it will be scheduled for delivery ahead of the older order. The time to delivery is the diagnoal distance (hypotenuse) of the triangle with NS and EW co-ordinates. Based on the example provided it was determined that the Drone can travel diagonally to deliver an order.
 
 ### Drone Operating Area
-Since the Drone dispatch center is only open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to make sure the Drone gets back in 16 hours. The operating distance will be limited to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed unreachable and the order will not be processed. Options considered for delivery area were Square, Rectangular and Circular. Circular shape gives us the biggest processing area and is used for the solution.
+Since the Drone dispatch center is open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to make sure the Drone gets back in 16 hours. That limits the operating distance to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed unreachable and the order will not be processed. Options considered for delivery area were Square, Rectangular and Circular. Circular shape gives us the biggest processing area and is used for the solution.
 
 ### Invalid parameters in input file
 If the file contains bad data the order will be rejected and count against NPS calculation as a detractor with the worst score. Examples of bad data include invalid or incomplete parameters based on the specifications provided. Bound checks have not been performed and all numbers are limited to integer bounds.
@@ -88,7 +89,7 @@ It is not completely clear from the sample calculation what the intended logic s
 
 ## Next Steps
 
-- The problem poses a significant scheduling challenge at real world scale. Drones operating areas will need to be shared with  overlapping circular regions where multiple Drones can operate. Shared drones will need to work off of concurrent order queues. Calculation and sizing can be based on how much a drone can travel in a particular day.
+- The problem poses a significant scheduling challenge at real world scale. Drones operating areas will need to be shared with  overlapping circular regions where multiple Drones can operate. Shared drones will need to work off of concurrent order queues. Calculation and sizing can be based on how much a drone can travel in a particular day. Order prioritization based on shiping type should also be taken into account.
 
 - Enhanced unit tests will need to be added for border and edge case scenarios.
 
