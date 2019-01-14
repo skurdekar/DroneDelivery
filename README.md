@@ -5,10 +5,11 @@ The application can be downloaded using the following command (sample input file
 The application is packaged with the Gradle Build Tool. It can be built using the following command
 
 - `gradle build`
-The application can be run as follows
+The application can be run as follows (using sample input)
 
 - `gradle run --args=<filepath>`
 - `gradle run --args='droneOrderInput.txt'`
+Input file lines starting with `#` are ignored.
 
 The build can be cleaned as follows
 
@@ -47,9 +48,9 @@ Once packaged as a fat jar it can be run as a standalone java application
     calculateNPS: NPS: 75
     DroneDelivery: successfully wrote output to /Users/skurdekar/droneDeliveryOut/droneDeliveryOut.txt
 ```
-### Output file is written to `userhome/droneDeliveryOut/droneDeliveryOut.txt`
+#### Output file is written to `userhome/droneDeliveryOut/droneDeliveryOut.txt`
 
-### Reject file is written to `userhome/droneDeliveryOut/droneDeliveryRejects.txt`
+#### Rejects file is written to `userhome/droneDeliveryOut/droneDeliveryRejects.txt`
 
 ## Unit Tests
 
@@ -63,17 +64,20 @@ All tests are run everytime a gradle build command is run
 ### Drone Operating Area
 Since the Drone dispatch center is only open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to make sure the Drone gets back in 16 hours. The operating distance will be limited to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed invalid and the order will not be processed. Circular shape gives us the biggest processing area.
 
-### Assumption: Deliveries that cannot be processed the same day will be rejected
-Prior to scheduling delivery the scheduler ensures that the Drone can be back before the operating center closes (10 pm). Any orders that cannot be processed will be rejected and stored in a reject file droneDeliveryRejects.txt (in the same directory as output file). All rejects will be considered incomplete orders and can be set for manual process the next day. The handling of rejects is beyond the scope of this solution.
-
 ### Invalid parameters in input file
 If the file contains bad data the order will be rejected and count against NPS calculation as a detractor with the worst score.
 
 ### Error handling
 There is minimal error handling implemented in the application which is in no way indicative of how an application should handle edge cases, bad data and erroneous conditions in production. 
 
+### Assumption Handling time at dispatch and delivery
+Based on the example provided there is no delay in actually depositing an order at its destination or loading items at the dispatch facility. The only delay in the processing is 1 second delay between returning of the Drone and dispatch. The applications builds on the sample output provided for its calculations and this is not a real world scenario where there will be some delays.
+
+### Assumption: Deliveries that cannot be processed the same day will be rejected
+Prior to scheduling delivery the scheduler ensures that the Drone can be back before the operating center closes (10 pm). Any orders that cannot be processed will be rejected and stored in a reject file droneDeliveryRejects.txt (in the same directory as output file). All rejects will be considered incomplete orders and can be set for manual process the next day. The handling of rejects is beyond the scope of this solution.
+
 ### Assumption: Solution will not handle rolling over undelivered orders to next day
-For NPS calculation rejected orders will be considered to have a 0 NPS Score
+For NPS calculation rejected orders will be considered to have a 0 NPS Score. Handling of rejected orders is beyond scope of this application. While it is understood that within the NPS calculation window orders can still be delivered next day by 8 am that consideration has not been used.
 
 ### Assumption: NPS Calculation
 NPS Calculation will be done using the following formula
