@@ -56,7 +56,7 @@ All tests are run everytime a gradle build command is run
 ## Logic & Assumptions
 
 ### Drone Operating Area
-Since the Drone dispatch center is only open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to make sure the Drone gets back in 16 hours. The operating distance will be limited to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed invalid and the order will not be processed
+Since the Drone dispatch center is only open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to make sure the Drone gets back in 16 hours. The operating distance will be limited to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed invalid and the order will not be processed. Circular shape gives us the biggest processing area.
 
 ### Assumption: Deliveries that cannot be processed the same day will be rejected
 Prior to scheduling delivery the scheduler ensures that the Drone can be back before the operating center closes (10 pm). Any orders that cannot be processed will be rejected and stored in a reject file droneDeliveryRejects.txt (in the same directory as output file). All rejects will be considered incomplete orders and can be set for manual process the next day. The handling of rejects is beyond the scope of this solution.
@@ -74,6 +74,8 @@ It is not completely clear from the description what the intended logic should b
 
 ## Next Steps
 
-- The problem poses a significant scheduling challenge at scale. Drones will need to be shared with possible Drone overlapp areas using circular regions. Shared drones will need to work off of concurrent order queues. Calculation can be based on how much a drone can travel in a particular day.
+- The problem poses a significant scheduling challenge at scale. Drones will need to be shared with possible Drone overlapp areas using circular regions. Shared drones will need to work off of concurrent order queues. Calculation and sizing can be based on how much a drone can travel in a particular day.
 
 - Enhanced unit test will need to be added for border and edge case scenarios.
+
+- OrderProcessor can implement a service interface for remote interaction with other Drone Schedulers
