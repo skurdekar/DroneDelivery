@@ -6,17 +6,34 @@
 The application can be downloaded using the following command (sample input file droneOrderInput.txt is provided)
 
 - `git clone https://github.com/skurdekar/DroneDelivery.git`
+
+#### Running behind corporate proxy
+The proxy information needs to be stored in gradle.properties file
+On Unix based systems this is ~/.gradle/gradle.properties file
+
+```
+systemProp.http.proxyHost=<proxhost>
+systemProp.http.proxyPort=<proxyport>
+systemProp.http.proxyUser=<userid>
+systemProp.http.proxyPassword=<pass>
+systemProp.https.proxyHost=<proxyhost>
+systemProp.https.proxyPort=<proxyport>
+systemProp.https.proxyUser=<userid>
+systemProp.https.proxyPassword=<pass>
+```
+#### Gradle 4.9+ is needed to run the application (specifically the support for arguments that are passed to gradle has been added only in 4.9). You can install gradle (https://gradle.io) or use the wrapper packaged with the application.
+
 The application is packaged with the Gradle Build Tool. It can be built using the following command
-- `gradle build`
+- `./gradlew build`
 
 The application can be run as follows (using sample input)
-- `gradle run --args=<filepath>`
-- `gradle run --args='droneOrderInput.txt'`
+- `./gradlew run --args=<filepath>`
+- `./gradlew run --args='droneOrderInput.txt'`
 
 Input file lines starting with `#` are ignored.
 
 The build can be cleaned as follows
-- `gradle clean`
+- `./gradlew clean`
 
 * If gradle is not installed on your system the above commands can be run using *gradlew* (part of the repo)
 
@@ -24,7 +41,7 @@ The application implements logging using the log4j library. The log configuratio
 
 Alternatively the application can be packaged as a fat jar
 
-- `gradle fatJar`
+- `./gradlew fatJar`
 Once packaged as a fat jar it can be run as a standalone java application
 
 - `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath>`
