@@ -72,6 +72,9 @@ For NPS calculation rejected orders will be considered to have a 0 NPS Score
 ### Invalid parameters in input file
 If the file contains bad data the order will be rejected and count against NPS calculation as a detractor with the worst score.
 
+### Error handling
+There is minimal error handling implemented in the application which is in no way indicative of how an application should handle edge cases, bad data and erroneous conditions in production. 
+
 ### NPS Calculation
 NPS Calculation will be done using the following formula
 `Total promoter recommendation/(promoters + detractors) *10 - Total detractor recommendation/(promoters + detractors)*10`
@@ -84,3 +87,5 @@ It is not completely clear from the description what the intended logic should b
 - Enhanced unit test will need to be added for border and edge case scenarios.
 
 - OrderProcessor can implement a service interface for remote interaction with other Drone Schedulers
+
+- Edge case scenarios and handling bad data needs to be handled in a comprehensive manner.
