@@ -26,6 +26,7 @@ Once packaged as a fat jar it can be run as a standalone java application
 - `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath>`
 
 ## Output
+```
     output file path: /Users/skurdekar/droneDeliveryOut/
     location: N11W5 delivery time: 724.98
     OrderId: WM001 Min Delivery Time: 01:00:15
@@ -45,6 +46,7 @@ Once packaged as a fat jar it can be run as a standalone java application
     startProcessing: Processed Order: OrderId: WM003 PlaceTime: 05:31:50 MinDeliveryTime: 01:18:39 DispatchTime: 06:55:35 DeliveryTime: 07:46:04 ReturnTime(+1): 08:36:33
     calculateNPS: NPS: 75
     DroneDelivery: successfully wrote output to /Users/skurdekar/droneDeliveryOut/droneDeliveryOut.txt
+```
 
 ## Unit Tests
 
