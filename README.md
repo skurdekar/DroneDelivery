@@ -1,5 +1,5 @@
 ## Building and Running the application
-The application can be downloaded using the following command
+The application can be downloaded using the following command (sample input file droneOrderInput.txt is provided)
 
 - `git clone https://github.com/skurdekar/DroneDelivery.git`
 The application is packaged with the Gradle Build Tool. It can be built using the following command
@@ -47,6 +47,9 @@ Once packaged as a fat jar it can be run as a standalone java application
     calculateNPS: NPS: 75
     DroneDelivery: successfully wrote output to /Users/skurdekar/droneDeliveryOut/droneDeliveryOut.txt
 ```
+### Output file is written to `userhome/droneDeliveryOut/droneDeliveryOut.txt`
+
+### Reject file is written to `userhome/droneDeliveryOut/droneDeliveryRejects.txt`
 
 ## Unit Tests
 
