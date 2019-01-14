@@ -66,16 +66,16 @@ Since the Drone dispatch center is only open for 16 hours every day (from 6 am t
 ### Assumption: Deliveries that cannot be processed the same day will be rejected
 Prior to scheduling delivery the scheduler ensures that the Drone can be back before the operating center closes (10 pm). Any orders that cannot be processed will be rejected and stored in a reject file droneDeliveryRejects.txt (in the same directory as output file). All rejects will be considered incomplete orders and can be set for manual process the next day. The handling of rejects is beyond the scope of this solution.
 
-### Solution will not handle rolling over undelivered orders to next day
-For NPS calculation rejected orders will be considered to have a 0 NPS Score
-
 ### Invalid parameters in input file
 If the file contains bad data the order will be rejected and count against NPS calculation as a detractor with the worst score.
 
 ### Error handling
 There is minimal error handling implemented in the application which is in no way indicative of how an application should handle edge cases, bad data and erroneous conditions in production. 
 
-### NPS Calculation
+### Assumption: Solution will not handle rolling over undelivered orders to next day
+For NPS calculation rejected orders will be considered to have a 0 NPS Score
+
+### Assumption: NPS Calculation
 NPS Calculation will be done using the following formula
 `Total promoter recommendation/(promoters + detractors) *10 - Total detractor recommendation/(promoters + detractors)*10`
 It is not completely clear from the description what the intended logic should be as per the example.
