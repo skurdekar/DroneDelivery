@@ -7,6 +7,9 @@ The application can be downloaded using the following command (sample input file
 
 - `git clone https://github.com/skurdekar/DroneDelivery.git`
 
+
+#### Gradle 4.9+ is needed to run the application (specifically the support for arguments that are passed to gradle has been added only in 4.9). You can install gradle (https://gradle.io) or use the wrapper `gradlew` packaged with the application.
+
 #### Running behind corporate proxy
 The proxy information needs to be stored in gradle.properties file
 On Unix based systems this is ~/.gradle/gradle.properties file
@@ -21,7 +24,6 @@ systemProp.https.proxyPort=<proxyport>
 systemProp.https.proxyUser=<userid>
 systemProp.https.proxyPassword=<pass>
 ```
-#### Gradle 4.9+ is needed to run the application (specifically the support for arguments that are passed to gradle has been added only in 4.9). You can install gradle (https://gradle.io) or use the wrapper `gradlew` packaged with the application.
 
 The application is packaged with the Gradle Build Tool. It can be built using the following command
 - `./gradlew clean build`
