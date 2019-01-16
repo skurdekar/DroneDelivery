@@ -126,11 +126,14 @@ NPS Calculation will be done using the following formula
 It is not completely clear from the sample calculation what the intended logic should be.
 
 ## Next Steps
+- Security - Authentication and Authorization
 
 - The problem poses a significant scheduling challenge at real world scale. Drones operating areas will need to be shared with  overlapping circular regions where multiple Drones can operate. Shared drones will need to work off of concurrent order queues. Calculation and sizing can be based on how much a drone can travel in a particular day. Order prioritization based on shiping type should also be taken into account.
 
 - Enhanced unit tests will need to be added for border and edge case scenarios.
 
 - OrderProcessor can implement a service interface for remote interaction with other Drone Schedulers. Queue information can hence be shared.
+
+- Create microservice APIs for admin as well as clients of the Drone Delivery Service. Add APIs to query the queue.
 
 - Edge case scenarios and handling bad data needs to be done in a comprehensive manner.
