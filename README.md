@@ -8,10 +8,10 @@ The application can be downloaded using the following command (sample input file
 - `git clone https://github.com/skurdekar/DroneDelivery.git`
 
 
-#### Gradle 4.9+ is needed to run the application (specifically the support for arguments that are passed to gradle has been added only in 4.9). You can install gradle (https://gradle.io) or use the wrapper `gradlew` packaged with the application.
+#### Gradle 4.9+ is needed to build and run the application (specifically the support for arguments that are passed to gradle has been added only in 4.9+). You can install gradle (https://gradle.io) or use the wrapper `gradlew` packaged with the application source.
 
 #### Running behind corporate proxy
-The proxy information needs to be stored in gradle.properties file
+The corporate proxy information needs to be stored in gradle.properties file
 On Unix based systems this is ~/.gradle/gradle.properties file
 
 ```
@@ -32,12 +32,10 @@ The application can be run as follows (using sample or user provided input)
 - `./gradlew run --args=<filepath>`
 - `./gradlew run --args='droneOrderInput.txt'`
 
-Input file lines starting with `#` are ignored.
+Input file lines starting with `#` are considered to be comments and ignored.
 
 The build can be cleaned as follows
 - `./gradlew clean`
-
-The application implements logging using the log4j library. The log configuration is available in log4j.properties file in resources directory.
 
 Alternatively the application can be packaged as a fat jar
 - `./gradlew clean build fatJar`
@@ -45,8 +43,9 @@ Alternatively the application can be packaged as a fat jar
 Once packaged as a fat jar it can be run as a standalone java application
 - `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath>`
 
-## Output
-Currently the application outputs log4j formatted messages set to DEBUG level (in log4j.properties file). Both the console and file output are set to the same level. Sample output is included below. The output file is presented as the last line of the output and is not configurable at this time.
+## Example Output
+
+The application implements logging using the log4j library. The log configuration is available in log4j.properties file in resources directory. Currently the application outputs log4j formatted messages set to DEBUG level (in log4j.properties file). Both the console and file output are set to the same level. Sample output is included below. The output file is presented as the last line of the output and is not configurable at this time.
 
 ```
     output file path: /Users/skurdekar/droneDeliveryOut/
@@ -100,10 +99,10 @@ DroneDeliveryAppTest > testTooFar PASSED
 ## Logic & Assumptions
 
 ### Logic used to Schedule the Drone and pick the next Order
-The orders are scheduled based on least total time to delivery from the time of order placement. This includes wait time in case an order is placed before the facility opens plus the drone delivery time. In case an order is placed after the facility opens, but takes lesser time to deliver than an order already in queue it will be scheduled for delivery ahead of the older order. The time to delivery is the diagnoal distance (hypotenuse) of the triangle with NS and EW co-ordinates. Based on the example provided it was determined that the Drone can travel diagonally to deliver an order.
+The orders are scheduled based on least total time to delivery from the time of order placement. This includes wait time in case an order is placed before the facility opens plus the drone delivery time. In case an order is placed after the facility opens, but takes lesser time to deliver than an order already in queue it will be scheduled for delivery ahead of the older order. The time to delivery is the diagnoal distance (hypotenuse) of the triangle with NS and EW co-ordinates from the delivery center. Based on the example provided it was determined that the Drone can travel diagonally to deliver an order.
 
 ### Drone Operating Area
-Since the Drone dispatch center is open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to make sure the Drone gets back in 16 hours. That limits the operating distance to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed unreachable and the order will not be processed. Options considered for delivery area were Square, Rectangular and Circular. Circular shape gives us the biggest processing area and is used for the solution.
+Since the Drone dispatch center is open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to ensure the Drone gets back in 16 hours. This limits the operating distance to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed unreachable and the order will not be processed. Options considered for delivery area were Square, Rectangular and Circular. Circular shape gives us the biggest processing area and is hence used for the solution.
 
 ### Invalid parameters in input file
 If the file contains bad data the order will be rejected and count against NPS calculation as a detractor with the worst score. Examples of bad data include invalid or incomplete parameters based on the specifications provided. Bound checks have not been performed and all numbers are limited to integer bounds.
@@ -112,7 +111,7 @@ If the file contains bad data the order will be rejected and count against NPS c
 There is minimal error handling implemented in the application which is in no way indicative of how an application should handle edge cases, bad data and erroneous conditions in production. 
 
 ### Assumption: Handling time at dispatch and delivery
-Based on the example provided there is no delay in  depositing an order at its destination or loading items at the dispatch facility. The only delay in the processing is 1 second delay between returning of the Drone and next dispatch. The application builds on the sample output provided for its calculations but this is not a real world scenario where there will be some delays.
+Based on the example provided there is no delay in depositing an order at its destination or loading items at the dispatch facility. The only delay in the processing is 1 second delay between returning of the Drone and next dispatch. The application builds on the sample output provided for its calculations but this is not a real world scenario where there will be some delays.
 
 ### Assumption: Deliveries that cannot be processed the same day will be rejected
 Prior to scheduling delivery the scheduler ensures that the Drone can be back before the operating center closes (10 pm). Any orders that cannot be processed in time will be rejected and stored in a reject file droneDeliveryRejects.txt (in the same directory as output file). All rejects will be considered incomplete orders and can be set for manual process the next day. The handling of rejects processing is beyond the scope of this solution.
@@ -128,12 +127,12 @@ It is not completely clear from the sample calculation what the intended logic s
 ## Next Steps
 - Security - Authentication and Authorization
 
-- The problem poses a significant scheduling challenge at real world scale. Drones operating areas will need to be shared with  overlapping circular regions where multiple Drones can operate. Shared drones will need to work off of concurrent order queues. Calculation and sizing can be based on how much a drone can travel in a particular day. Order prioritization based on shiping type should also be taken into account.
+- The problem poses a significant scheduling challenge at real world scale. Drones operating areas will need to be shared with  overlapping circular regions where multiple Drones can operate in unision. Shared drones will need to work off of concurrent order queues. Calculation and sizing can be based on how much a drone can travel in a particular day. Delivery prioritization based on shiping type should also be taken into account.
 
 - Enhanced unit tests will need to be added for border and edge case scenarios.
 
 - OrderProcessor can implement a service interface for remote interaction with other Drone Schedulers. Queue information can hence be shared.
 
-- Create microservice APIs for admin as well as clients of the Drone Delivery Service. Add APIs to query the queue.
+- Create microservice APIs for admin as well as customers of the Drone Delivery Service. Add APIs to query the queue.
 
 - Edge case scenarios and handling bad data needs to be done in a comprehensive manner.
