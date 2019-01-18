@@ -75,7 +75,7 @@ The application implements logging using the log4j library. The log configuratio
 ## Unit Tests
 - `./gradlew clean test`
 
-See DroneDeliveryAppTest class for test examples. Currently i have only added 3 test cases and will possibly add more as time permits.
+See DroneDeliveryAppTest class for test examples. 
 Test reports are generated in build/reports/tests/test/classes directory
 All tests are run everytime a gradle clean build command is run. Sample test output is included below
 
@@ -99,7 +99,7 @@ DroneDeliveryAppTest > testTooFar PASSED
 ## Logic & Assumptions
 
 ### Logic used to Schedule the Drone and pick the next Order
-The orders are scheduled based on least total time to delivery from the time of order placement. This includes wait time in case an order is placed before the facility opens plus the drone delivery time. In case an order is placed after the facility opens, but takes lesser time to deliver than an order already in queue it will be scheduled for delivery ahead of the older order. The time to delivery is the diagnoal distance (hypotenuse) of the triangle with NS and EW co-ordinates from the delivery center. Based on the example provided it was determined that the Drone can travel diagonally to deliver an order.
+The orders are scheduled based on least time to delivery from the time of drone facility opening. The dispatch time starts when the facility opens. In case an order is placed after the facility opens, but takes lesser time to deliver than an order already in queue it will be scheduled for delivery ahead of the older order. If no orders are found with above rule, the earlier placed order will be taken for delivery. The time to delivery is the diagonal distance (hypotenuse) of the triangle with NS and EW co-ordinates from the delivery center. Based on the example provided it was determined that the Drone can travel diagonally to deliver an order.
 
 ### Drone Operating Area
 Since the Drone dispatch center is open for 16 hours every day (from 6 am to 10 pm) and the Drone speed is 1 block (horizontal or vertical) per minute we have to ensure the Drone gets back in 16 hours. This limits the operating distance to an area that takes less than 8 hours to and fro for delivery. We will limit the circular area to 480 radial blocks (giving us a diagonal to be back in 16 hours for every delivery). Any location that results in a diagonal bigger than 480 blocks will be deemed unreachable and the order will not be processed. Options considered for delivery area were Square, Rectangular and Circular. Circular shape gives us the biggest processing area and is hence used for the solution.
@@ -133,6 +133,6 @@ It is not completely clear from the sample calculation what the intended logic s
 
 - OrderProcessor can implement a service interface for remote interaction with other Drone Schedulers. Queue information can hence be shared.
 
-- Create microservice APIs for admin as well as customers of the Drone Delivery Service. Add APIs to query the queue.
+- Create microservice APIs for admin as well as customers of the Drone Delivery Service. Add APIs to query the process queue information as well as NPS on Order Processor.
 
 - Edge case scenarios and handling bad data needs to be done in a comprehensive manner.
