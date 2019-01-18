@@ -67,13 +67,12 @@ public class DroneDeliveryAppTest {
     @Test
     public void preemptFasterDelivery2() {
         OrderProcessor op = new OrderProcessor();
-        op.createOrder("WM001 N11W5 0:11:50" );
+        op.createOrder("WM001 N11W5 06:11:50" );
         op.createOrder("WM002 S3E2 05:25:55" );
         op.startProcessing();
         assertEquals(op.getProcessedOrders().size(), 2);
         assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM002");
         assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM001");
-        assertEquals(op.getNPS(), 94);
     }
 
     @Test
