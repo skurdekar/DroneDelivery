@@ -65,6 +65,18 @@ public class DroneDeliveryAppTest {
     }
 
     @Test
+    public void preemptFasterDelivery2() {
+        OrderProcessor op = new OrderProcessor();
+        op.createOrder("WM001 N11W5 0:11:50" );
+        op.createOrder("WM002 S3E2 05:25:55" );
+        op.startProcessing();
+        assertEquals(op.getProcessedOrders().size(), 2);
+        assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM002");
+        assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM001");
+        assertEquals(op.getNPS(), 94);
+    }
+
+    @Test
     public void retainInPlaceOrder() {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N11W5 05:11:50" );
@@ -80,14 +92,14 @@ public class DroneDeliveryAppTest {
     public void retainInPlaceOrder2() {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N11W5 05:11:50" );
-        op.createOrder("WM004 S1E1 06:02:55" );
-        op.createOrder("WM002 S3E3 06:04:55" );
-        op.createOrder("WM003 S3E2 06:12:55" );
+        op.createOrder("WM002 S1E1 06:02:55" );
+        op.createOrder("WM003 S3E3 06:04:55" );
+        op.createOrder("WM004 S3E2 06:12:55" );
         op.startProcessing();
         assertEquals(op.getProcessedOrders().size(), 4);
         assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM001");
-        assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM004");
-        assertEquals(op.getProcessedOrders().get(2).getOrderId(), "WM003");
+        assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM002");
+        assertEquals(op.getProcessedOrders().get(2).getOrderId(), "WM004");
     }
 
     @Test
