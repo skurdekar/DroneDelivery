@@ -17,7 +17,7 @@ public class Location {
     private static final float SPEED = 1.0f;
 
     private final String location;
-    private int deliveryTimeInSeconds;
+    private int transportTimeInSeconds;
 
     /**
      * Constructor
@@ -25,15 +25,15 @@ public class Location {
      */
     public Location(String location){
         this.location = location;
-        deliveryTimeInSeconds = _getDeliveryTime();
+        transportTimeInSeconds = _getTransportTime();
     }
 
     /**
      * Time it takes for the drone to make a delivery to this location(seconds)
      * @return drone delivery time
      */
-    public int getDeliveryTimeInSeconds(){
-        return deliveryTimeInSeconds;
+    public int getTransportTimeInSeconds(){
+        return transportTimeInSeconds;
     }
 
     /**
@@ -42,10 +42,10 @@ public class Location {
      *
      * @return time rounded to 2 decimals
      */
-    private int _getDeliveryTime(){
+    private int _getTransportTime(){
         boolean isValid = Pattern.matches(LOCATION_PATTERN, location);
         if(!isValid) {
-            throw new IllegalArgumentException(RejectedOrder.RejectReason.INVALID_PARAMS.toString());
+            throw new IllegalArgumentException(RejectedOrder.RejectReason.INVALID_LOCATION.toString());
         }
 
         long squareMinutes = 0;
@@ -55,6 +55,9 @@ public class Location {
         final Matcher matched = integerPattern.matcher(location);
         while (matched.find()) {
             int blocks = Integer.valueOf(matched.group());
+            if(blocks < 0){
+                throw new IllegalArgumentException(RejectedOrder.RejectReason.INVALID_LOCATION.toString());
+            }
             float minutes = blocks*SPEED;
             squareMinutes += Math.pow(minutes, 2);
         }
@@ -62,14 +65,14 @@ public class Location {
         if(squareMinutes < Math.pow(MAX_RADIUS, 2)) {
             long squareSecs = squareMinutes*3600; //convert to sec sq
             retVal = Float.valueOf(DEC_FORMAT.format(Math.sqrt(squareSecs)));
-            logger.debug("location: " + location + " delivery time(secs): " + retVal);
+            logger.debug("Location: " + location + " transport time(secs): " + retVal);
         } else {
-            throw new IllegalArgumentException(RejectedOrder.RejectReason.LOCATION_TOO_FAR.toString());
+            throw new IllegalArgumentException(RejectedOrder.RejectReason.DESTINATION_TOO_FAR.toString());
         }
         return Math.round(retVal); //round to nearest integer
     }
 
-    public static void main(String argv[]) {
+    /*public static void main(String argv[]) {
         Location loc = new Location("NN10E5");
-    }
+    }*/
 }

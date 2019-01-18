@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class OrderFileProcessor {
 
-    final static Log logger = LogFactory.getLog(OrderProcessor.class);
+    private final static Log logger = LogFactory.getLog(OrderProcessor.class);
     private static OrderFileProcessor instance = new OrderFileProcessor();
 
     public static OrderFileProcessor getInstance() {

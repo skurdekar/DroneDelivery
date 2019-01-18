@@ -23,6 +23,7 @@ public class Config {
     private static Date OPEN_TIME;
     private static Date CLOSE_TIME;
 
+    //set facility open and close times
     static{
         try{
             OPEN_TIME = TIME_FORMAT.parse(OPEN_TIME_STR);

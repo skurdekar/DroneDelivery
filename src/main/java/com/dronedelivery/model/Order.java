@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 public class Order {
-    final static Log logger = LogFactory.getLog(Order.class);
+    private final static Log logger = LogFactory.getLog(Order.class);
 
     private static final String ORDER_PATTERN = "WM\\d+";
     private String orderId;
@@ -21,8 +21,9 @@ public class Order {
     private Date dispatchTime;
     private Date deliveryTime;
     private Date returnTime;
-    private int fastestDeliveryDuration;
-    private float nps;
+    private int transportTime;
+    private float score;
+    private RejectedOrder.RejectReason rejectReason = null;
 
     /**
      * Constructor for Object class
@@ -33,13 +34,13 @@ public class Order {
     public Order(String orderId, String location, Date orderPlaceTime, String orderStr){
         boolean isValid = Pattern.matches(ORDER_PATTERN, orderId);
         if(!isValid) {
-            throw new IllegalArgumentException("Order: Invalid OrderId. Must match WM####");
+            throw new IllegalArgumentException(RejectedOrder.RejectReason.INVALID_ID.toString());
         }
         this.location = new Location(location);
         this.orderId = orderId;
         this.orderPlaceTime = orderPlaceTime;
         this.orderStr = orderStr;
-        initFastestDeliveryDuration();
+        initTransportTime();
     }
 
     @Override
@@ -59,6 +60,10 @@ public class Order {
         return orderStr;
     }
 
+    public String getOrderId(){
+        return orderId;
+    }
+
     public Date getOrderPlaceTime() {
         return orderPlaceTime;
     }
@@ -71,46 +76,58 @@ public class Order {
         return returnTime;
     }
 
-    public int getFastestDeliveryDuration(){
-        return fastestDeliveryDuration;
+    public int getTransportTime(){
+        return transportTime;
     }
 
+    public RejectedOrder.RejectReason getRejectReason() { return rejectReason; }
+
     /**
-     *  Schedule drone deliver
+     * Schedule drone delivery. Sets the dispatch, delivery and return times on the Order
+     *
      * @param prevOrder previous order scheduled (null if first order)
      * @return true/false if the delivery was scheduled
      */
     public boolean scheduleDelivery(Order prevOrder) {
+        if(orderPlaceTime.compareTo(Config.getFacilityCloseTime()) > 0 ){
+            rejectReason = RejectedOrder.RejectReason.FACILITY_CLOSED;
+            return false;
+        }
+
         Calendar cal = Calendar.getInstance();
-        dispatchTime = Config.getFacilityOpenTime();
+        dispatchTime = Config.getFacilityOpenTime();//if no previous order exists
         if(prevOrder != null) {//add 1 second to previous drone return time
             cal.setTime(prevOrder.getDroneReturnTime());
             cal.add(Calendar.SECOND, 1);
-            dispatchTime = cal.getTime();
+            dispatchTime = cal.getTime();//set dispatch time
         }
-        //edge case
+        //edge case. If the order has been placed after facility opens reset dispatch time
         if(orderPlaceTime.compareTo(dispatchTime) > 0){
             dispatchTime=orderPlaceTime;
         }
 
+        //set delivery and return times
         cal.setTime(dispatchTime);
-        cal.add(Calendar.SECOND, location.getDeliveryTimeInSeconds());
-        deliveryTime = cal.getTime();
-        cal.add(Calendar.SECOND, location.getDeliveryTimeInSeconds());
-        returnTime = cal.getTime();
-        //make sure drone can return before drone facility closes
+        cal.add(Calendar.SECOND, location.getTransportTimeInSeconds());
+        deliveryTime = cal.getTime();//set delivery time
+        cal.add(Calendar.SECOND, location.getTransportTimeInSeconds());
+        returnTime = cal.getTime();//set return time
+        //make sure drone can return before drone facility closes. If not reject
         if(returnTime.compareTo(Config.getFacilityCloseTime()) > 0) {
             returnTime=dispatchTime=null;
+            rejectReason = RejectedOrder.RejectReason.DESTINATION_TOO_FAR;
             return false;
         }
-        calculateNPS();
+
+        //calculate Score
+        calculateScore();
         return true;
     }
 
     public String toString(){
         SimpleDateFormat fmt = Config.TIME_FORMAT;
         return "OrderId: " + orderId + " PlaceTime: " + fmt.format(orderPlaceTime) +
-                " MinDeliveryTime: " + Time.getTime(fastestDeliveryDuration) +
+                " TransportTime: " + Time.getTime(transportTime) +
                 " DispatchTime: " + fmt.format(dispatchTime)+ " DeliveryTime: " + fmt.format(deliveryTime) +
                 " ReturnTime(+1): " + fmt.format(returnTime);
     }
@@ -119,37 +136,40 @@ public class Order {
         return orderId + " " + Config.TIME_FORMAT.format(dispatchTime);
     }
 
-    private void initFastestDeliveryDuration(){
-        int waitTime = DroneDeliveryUtils.getDifferenceInSeconds(Config.getFacilityOpenTime(), orderPlaceTime).getTotalSeconds();
-        fastestDeliveryDuration = location.getDeliveryTimeInSeconds() + waitTime;
-        logger.debug("OrderId: " + orderId + " Min Delivery Time: " + Time.getTime(fastestDeliveryDuration));
+    /**
+     * Initialize the fastest time it takes to deliver an order
+     */
+    private void initTransportTime(){
+        //int waitTime = DroneDeliveryUtils.getDifferenceInSeconds(Config.getFacilityOpenTime(), orderPlaceTime).getTotalSeconds();
+        transportTime = location.getTransportTimeInSeconds() /*+ waitTime*/;
+        logger.debug("OrderId: " + orderId + " Transport Time: " + Time.getTime(transportTime));
     }
 
     /**
-     * Calculate local nps for this order
+     * Calculate local score for this order
      */
-    private void calculateNPS(){
+    private void calculateScore(){
         int deliveryTimeInt = DroneDeliveryUtils.getDifferenceInSeconds(deliveryTime, orderPlaceTime).getTotalSeconds();
         float hours = deliveryTimeInt/3600f;
-        nps = 10 - hours;
-        if (nps < 0) {
-            nps = 0;
+        score = 10 - hours;
+        if (score < 0) {
+            score = 0;
         }
         if(hours < 1){
-            nps = 10;
+            score = 10;
         }
-        logger.debug("OrderId: " + orderId + " NPS: " + nps);
+        logger.debug("OrderId: " + orderId + " Score: " + score);
     }
 
-    public float getNPS(){
-        return nps;
+    public float getScore(){
+        return score;
     }
 
     public boolean isPromoter(){
-        return nps > 8.5;
+        return score > 8.5;
     }
 
     public boolean isDetractor(){
-        return nps < 6.5;
+        return score < 6.5;
     }
 }

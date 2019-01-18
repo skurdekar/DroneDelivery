@@ -6,8 +6,10 @@ import com.dronedelivery.engine.OrderProcessor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.IOException;
+
 public class DroneScheduler {
-    final static Log logger = LogFactory.getLog(DroneScheduler.class);
+    private final static Log logger = LogFactory.getLog(DroneScheduler.class);
     private static DroneScheduler instance = new DroneScheduler();
     private DroneScheduler(){}
 
@@ -15,11 +17,15 @@ public class DroneScheduler {
         return instance;
     }
 
-    public void startScheduler() throws Exception{
+    public void startScheduler() {
         OrderProcessor op = new OrderProcessor();
-        OrderFileProcessor.getInstance().readOrderInput(op);
-        op.startProcessing();
-        op.writeOutput();
+        try {
+            OrderFileProcessor.getInstance().readOrderInput(op);
+            op.startProcessing();
+            op.writeOutput();
+        }catch(IOException ex){
+            logger.error("Could not read input file", ex);
+        }
     }
 
     public static void main(String argv[]) {

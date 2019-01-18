@@ -8,6 +8,6 @@ public class OrderComparatorDlvryDuration implements Comparator<Order> {
 
     @Override
     public int compare(Order a, Order b) {
-        return Integer.compare(a.getFastestDeliveryDuration(), b.getFastestDeliveryDuration());
+        return Integer.compare(a.getTransportTime(), b.getTransportTime());
     }
 }
