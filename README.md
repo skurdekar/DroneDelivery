@@ -124,6 +124,9 @@ NPS Calculation will be done using the following formula
 `Total promoter recommendation/(promoters + detractors) *10 - Total detractor recommendation/(promoters + detractors)*10`
 It is not completely clear from the sample calculation what the intended logic should be.
 
+### Assumption: Drone Operability
+I have made a few assumptions which may create some complications in real life scenario. Drone has enough battery life to run for 16 hours. Wind and payload do not affect drone speed. Drone is able to carry only one package at a time and has to return to facility to reload.
+
 ## Next Steps
 - Security - Authentication and Authorization
 
