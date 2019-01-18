@@ -133,7 +133,7 @@ I have made a few assumptions which may create some complications in real life s
 
 ## Next Steps
 
-### Future Architecture
+### Possible Future Architecture
 
 ![Screenshot](https://github.com/skurdekar/DroneDelivery/blob/master/architecture/DroneFuture.png)
 
