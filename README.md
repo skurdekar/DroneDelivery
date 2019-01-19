@@ -125,8 +125,8 @@ For NPS calculation rejected orders will be considered to have a 0 NPS Score. Ha
 
 ### Assumption: NPS Calculation
 NPS Calculation will be done using the following formula
-`Total promoter recommendation/(promoters + detractors) *10 - Total detractor recommendation/(promoters + detractors)*10`
-It is not completely clear from the sample calculation what the intended logic should be.
+`promoters/sampleSize*100 - detractors/sampleSize*100`
+Passive responses (7,8) will count towards sample size. Samplesize = promoterCount + detractorCount + passiveCount
 
 ### Assumption: Drone Operability
 I have made a few assumptions which may create some complications in real life scenario. Drone has enough battery life to run for 16 hours. Wind and payload do not affect drone speed. Drone is able to carry only one package at a time and has to return to facility to reload.
