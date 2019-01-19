@@ -96,7 +96,11 @@ Executing test testTooFar [DroneDeliveryAppTest] with result: SUCCESS
 DroneDeliveryAppTest > testTooFar PASSED
 ```
 
-## Logic & Assumptions
+## Architecture Logic & Assumptions
+
+### Current Architecture
+
+![Screenshot](https://github.com/skurdekar/DroneDelivery/blob/master/architecture/DroneCurrent.png)
 
 ### Logic used to Schedule the Drone and pick the next Order
 The orders are scheduled based on least time to delivery from the time of drone facility opening. The dispatch time starts when the facility opens. In case an order is placed after the facility opens, but takes lesser time to deliver than an order already in queue it will be scheduled for delivery ahead of the older order (with some conditions). If no orders are found with above rule, the earlier placed order will be taken for delivery. The time to delivery is the diagonal distance (hypotenuse) of the triangle with NS and EW co-ordinates from the delivery center. Based on the example provided it was determined that the Drone can travel diagonally to deliver an order.
@@ -124,7 +128,15 @@ NPS Calculation will be done using the following formula
 `Total promoter recommendation/(promoters + detractors) *10 - Total detractor recommendation/(promoters + detractors)*10`
 It is not completely clear from the sample calculation what the intended logic should be.
 
+### Assumption: Drone Operability
+I have made a few assumptions which may create some complications in real life scenario. Drone has enough battery life to run for 16 hours. Wind and payload do not affect drone speed. Drone is able to carry only one package at a time and has to return to facility to reload.
+
 ## Next Steps
+
+### Possible Future Architecture
+
+![Screenshot](https://github.com/skurdekar/DroneDelivery/blob/master/architecture/DroneFuture.png)
+
 - Security - Authentication and Authorization
 
 - The problem poses a significant scheduling challenge at real world scale. Drones operating areas will need to be shared with  overlapping circular regions where multiple Drones can operate in unision. Shared drones will need to work off of concurrent order queues. Calculation and sizing can be based on how much a drone can travel in a particular day. Delivery prioritization based on shiping type should also be taken into account.
