@@ -18,7 +18,7 @@ public class DroneDeliveryAppTest {
         assertEquals(op.getProcessedOrders().size(), 2);
         assertEquals(op.getProcessedOrders().get(0).getDispatchTime(), getDateFromString("06:00:00"));
         assertEquals(op.getProcessedOrders().get(1).getDispatchTime(), getDateFromString("06:07:13"));
-        assertEquals(op.getNPS(), 94);
+        assertEquals(op.getNPS(), 100);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class DroneDeliveryAppTest {
         assertEquals(op.getProcessedOrders().size(), 2);
         assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM002");
         assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM001");
-        assertEquals(op.getNPS(), 94);
+        assertEquals(op.getNPS(), 100);
     }
 
     @Test

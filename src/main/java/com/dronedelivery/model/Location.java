@@ -49,7 +49,7 @@ public class Location {
         }
 
         long squareMinutes = 0;
-        float retVal = 0.0f;
+        float retVal;
 
         final Pattern integerPattern = Pattern.compile("(\\-?\\d+)");
         final Matcher matched = integerPattern.matcher(location);

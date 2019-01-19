@@ -166,10 +166,10 @@ public class Order {
     }
 
     public boolean isPromoter(){
-        return score > 8.5;
+        return score > 8;
     }
 
     public boolean isDetractor(){
-        return score < 6.5;
+        return score < 7;
     }
 }

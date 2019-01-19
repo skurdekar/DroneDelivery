@@ -56,12 +56,4 @@ public class Time {
     public String toString(){
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
-
-    /*public static void main(String argv[]){
-        Time t1 = new Time(4, 4, 4);
-        System.out.println(t1);
-
-        Time t2 = new Time(3700);
-        System.out.println(t2);
-    }*/
 }

@@ -160,10 +160,7 @@ public class OrderProcessor {
                 break;
             }
         }
-        //if no orders are found just make the fastest oder current
-        /*if(otp == null && !sortedOrderList.isEmpty()) {
-            otp = sortedOrderList.get(0);
-        }*/
+
         //get the order with the earliest order place time if no orders were found
         if(otp == null && !orderList.isEmpty()) {
             otp = orderList.get(0);
@@ -181,37 +178,33 @@ public class OrderProcessor {
      * Calculate NPS
      */
     private void calculateNPS() {
-        int promoterCount = 0, detractorCount = 0;
-        float promoterScore = 0, detractorScore = 0;
+        float promoterCount = 0, detractorCount = 0, passiveCount = 0;
         for (Order order : processedList) {
             if (order.isPromoter()) {
                 promoterCount++;
-                promoterScore += order.getScore();
             } else if (order.isDetractor()) {
                 detractorCount++;
-                detractorScore += order.getScore();
+            } else{
+                passiveCount++;
             }
         }
 
         for (RejectedOrder order : rejectedList) {
-            if(order.getReason().equals(RejectedOrder.RejectReason.DESTINATION_TOO_FAR)){
+            if(order.getReason().equals(RejectedOrder.RejectReason.DESTINATION_TOO_FAR) ||
+               order.getReason().equals(RejectedOrder.RejectReason.FACILITY_CLOSED)){
                 detractorCount++;
-                detractorScore += 0;
             }
         }
-        int sampleSize = promoterCount + detractorCount;
-        promoterScore = (promoterScore/sampleSize)*10;
-        if(detractorCount > 0) {
-            detractorScore = ((10 - detractorScore)/sampleSize) * 10;
-        }
+
+        float sampleSize = promoterCount + detractorCount + passiveCount;
+        float promoterScore = (promoterCount/sampleSize)*100;
+        float detractorScore = (detractorCount/sampleSize)*100;
         NPS = Math.round(promoterScore - detractorScore);
 
-        //int sampleSize = processedList.size() + rejectedList.size();
-        //NPS = Math.round((promoterCount * 100f) / sampleSize) - Math.round((detractorCount * 100f) / sampleSize);
         logger.info("calculateNPS: NPS: " + NPS);
     }
 
-    private void rejectOrder(RejectedOrder.RejectReason rr, String orderStr){//order has not been created
+    private void rejectOrder(RejectedOrder.RejectReason rr, String orderStr) {
         logger.info("rejectOrder: Rejected Order: " + orderStr + " Reason: " + rr.toString());
         RejectedOrder ro = new RejectedOrder(rr, orderStr);
         rejectedList.add(ro);
