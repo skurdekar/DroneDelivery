@@ -111,6 +111,11 @@ Since the Drone dispatch center is open for 16 hours every day (from 6 am to 10 
 ### Invalid parameters in input file
 If the file contains bad data the order will be rejected and count against NPS calculation as a detractor with the worst score. Examples of bad data include invalid or incomplete parameters based on the specifications provided. Bound checks have not been performed and all numbers are limited to integer bounds.
 
+### NPS Calculation
+NPS Calculation will be done using the following formula
+`promoters/sampleSize*100 - detractors/sampleSize*100`
+Passive responses (7,8) will count towards sample size. Samplesize = promoterCount + detractorCount + passiveCount
+
 ### Error handling
 There is minimal error handling implemented in the application which is in no way indicative of how an application should handle edge cases, bad data and erroneous conditions in production. 
 
@@ -122,11 +127,6 @@ Prior to scheduling delivery the scheduler ensures that the Drone can be back be
 
 ### Assumption: Solution will not handle rolling over undelivered orders to next day
 For NPS calculation rejected orders will be considered to have a 0 NPS Score. Handling of rejected orders is beyond scope of this application. While it is understood that within the NPS calculation window, orders can still be delivered next day by 8 am that consideration has not been used.
-
-### Assumption: NPS Calculation
-NPS Calculation will be done using the following formula
-`promoters/sampleSize*100 - detractors/sampleSize*100`
-Passive responses (7,8) will count towards sample size. Samplesize = promoterCount + detractorCount + passiveCount
 
 ### Assumption: Drone Operability
 I have made a few assumptions which may create some complications in real life scenario. Drone has enough battery life to run for 16 hours. Wind and payload do not affect drone speed. Drone is able to carry only one package at a time and has to return to facility to reload.
