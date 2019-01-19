@@ -113,7 +113,7 @@ If the file contains bad data the order will be rejected and count against NPS c
 
 ### NPS Calculation
 NPS Calculation will be done using the following formula
-`promoters/sampleSize*100 - detractors/sampleSize*100`
+`promoterCount/sampleSize*100 - detractorCount/sampleSize*100`
 Passive responses (7,8) will count towards sample size. Samplesize = promoterCount + detractorCount + passiveCount
 
 ### Error handling
