@@ -17,7 +17,6 @@ public class OrderFileProcessor {
 
     private final static Log logger = LogFactory.getLog(OrderProcessor.class);
     private static OrderFileProcessor instance = new OrderFileProcessor();
-
     public static OrderFileProcessor getInstance() {
         return instance;
     }

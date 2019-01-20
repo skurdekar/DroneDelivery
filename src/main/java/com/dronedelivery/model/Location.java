@@ -65,7 +65,7 @@ public class Location {
         if(squareMinutes < Math.pow(MAX_RADIUS, 2)) {
             long squareSecs = squareMinutes*3600; //convert to sec sq
             retVal = Float.valueOf(DEC_FORMAT.format(Math.sqrt(squareSecs)));
-            logger.debug("Location: " + location + " transport time(secs): " + retVal);
+            //logger.debug("Location: " + location + " transport time(secs): " + retVal);
         } else {
             throw new IllegalArgumentException(RejectedOrder.RejectReason.DESTINATION_TOO_FAR.toString());
         }

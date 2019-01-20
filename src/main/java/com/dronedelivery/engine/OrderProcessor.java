@@ -33,6 +33,7 @@ public class OrderProcessor {
      * Comparator to sort Order list
      */
     private OrderComparatorDlvryDuration comparator = new OrderComparatorDlvryDuration();
+    private OrderComparatorPlaceTime comparator1 = new OrderComparatorPlaceTime();
 
     /**
      * NPS Score
@@ -68,13 +69,16 @@ public class OrderProcessor {
         }
         sortedOrderList.add(order);
         orderList.add(order);
-        sortedOrderList.sort(comparator);//sort by fastest delivery duration
     }
 
     /**
      * Start order processing. Will Go through order list and try to schedule the order
      */
     public void startProcessing() {
+        //sort one time
+        sortedOrderList.sort(comparator);//sort by fastest delivery duration
+        orderList.sort(comparator1);//sort by earlier place time
+
         Date openTime = Config.getFacilityOpenTime();
         Order order = getNextOrder(openTime);//get first order
         Order prevOrder = null;
@@ -151,11 +155,13 @@ public class OrderProcessor {
     private Order getNextOrder(Date currentTime){
         Iterator<Order> iter = sortedOrderList.iterator();
         Order otp = null;
+        logger.debug("Current Time: " + currentTime);
         while (iter.hasNext()){
             Order currOrder = iter.next();
             //if the current time is greater than order with least transport time, chose the order
             //from sorted list (with least transport time) - first in sorted list
             if(currentTime.compareTo(currOrder.getOrderPlaceTime()) >= 0) {
+                logger.debug("Found Order: " + currOrder.getOrderId() + " Placed: " + currOrder.getOrderPlaceTime());
                 otp =  currOrder;
                 break;
             }

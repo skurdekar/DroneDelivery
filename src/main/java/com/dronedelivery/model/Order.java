@@ -141,8 +141,8 @@ public class Order {
      */
     private void initTransportTime(){
         //int waitTime = DroneDeliveryUtils.getDifferenceInSeconds(Config.getFacilityOpenTime(), orderPlaceTime).getTotalSeconds();
-        transportTime = location.getTransportTimeInSeconds() /*+ waitTime*/;
-        logger.debug("OrderId: " + orderId + " Transport Time: " + Time.getTime(transportTime));
+        transportTime = location.getTransportTimeInSeconds();
+        //logger.debug("OrderId: " + orderId + " Transport Time: " + Time.getTime(transportTime));
     }
 
     /**
@@ -158,7 +158,7 @@ public class Order {
         if(hours < 1){
             score = 10;
         }
-        logger.debug("OrderId: " + orderId + " Score: " + score);
+        //logger.debug("OrderId: " + orderId + " Score: " + score);
     }
 
     public float getScore(){
