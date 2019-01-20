@@ -1,4 +1,6 @@
 
+This program was built as part of a coding challenge. The purpose is to implement Drone Scheduler and calculate NPS score based on delivery time.
+
 ## Building and Running the application
 
 #### The application has been built and tested in a `Java 10` runtime. Ensure that Java 10 is installed on your machine prior to downloading the repository.
