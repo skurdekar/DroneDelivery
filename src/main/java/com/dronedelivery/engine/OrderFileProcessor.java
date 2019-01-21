@@ -7,8 +7,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.stream.Stream;
 
 /**
  * Handles file related operations
@@ -32,12 +35,11 @@ public class OrderFileProcessor {
      */
     public void readOrderInput(OrderProcessor op) throws IOException {
         String inputFilePath = Config.getInputFilePath();
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                // process each line.
-                if (!line.equals("") && !line.startsWith("#")) {//skip blank or commented lines
-                    op.createOrder(line);
+        try (Stream<String> stream = Files.lines(Paths.get(inputFilePath))) {
+            for (Object line : stream.toArray()) {
+                String lineStr = (String)line;
+                if (!lineStr.equals("") && !lineStr.startsWith("#")) {//skip blank or commented lines
+                    op.createOrder(lineStr);
                 }
             }
         }

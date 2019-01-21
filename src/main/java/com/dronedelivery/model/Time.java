@@ -1,5 +1,8 @@
 package com.dronedelivery.model;
 
+/**
+ * Utility method to convert seconds to HH:MM:SS in relative time
+ */
 public class Time {
 
     private int hours = 0;

@@ -6,8 +6,10 @@ import com.dronedelivery.model.RejectedOrder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class OrderProcessor {
@@ -45,6 +47,9 @@ public class OrderProcessor {
     public OrderProcessor() {
     }
 
+    private int[] parseTimeString(String timeString){
+        return Arrays.stream(timeString.split(":")).mapToInt(Integer::parseInt).toArray();
+    }
     /**
      * Create Order from the order input string contained in file
      *
@@ -56,7 +61,8 @@ public class OrderProcessor {
             if (orderParams.length != 3) {
                 rejectOrder(RejectedOrder.RejectReason.INVALID_PARAMS, orderStr);
             } else {
-                Date orderPlaceTime = Config.TIME_FORMAT.parse(orderParams[2]);
+                int[] timesInt = parseTimeString(orderParams[2]);
+                LocalTime orderPlaceTime = LocalTime.of(timesInt[0], timesInt[1], timesInt[2]);
                 createOrder(orderParams[0], orderParams[1], orderPlaceTime, orderStr);
             }
         } catch (Exception ex) {
@@ -65,7 +71,7 @@ public class OrderProcessor {
         }
     }
 
-    private void createOrder(String orderId, String location, Date orderPlaceTime, String orderStr) {
+    private void createOrder(String orderId, String location, LocalTime orderPlaceTime, String orderStr) {
         Order order = new Order(orderId, location, orderPlaceTime, orderStr);
         if (sortedOrderList.contains(order)) {
             throw new IllegalArgumentException(RejectedOrder.RejectReason.DUPICATE_ID.toString());
@@ -84,7 +90,7 @@ public class OrderProcessor {
         for (Thread t : threadList) {
             t.start();
         }
-        for (Thread t : threadList) {
+        for (Thread t : threadList) {//wait for drones to finish processing
             try {
                 t.join();
             } catch (InterruptedException ex) {
@@ -92,6 +98,7 @@ public class OrderProcessor {
             }
         }
         if (processedList.size() > 0) {
+            processedList.sort(new OrderComparatorDispatchTime());//make sure the file is sorted
             calculateNPS();
         }
     }
@@ -100,7 +107,7 @@ public class OrderProcessor {
      * Start order processing. Will Go through order list and try to schedule the order
      */
     public void pvtStartProcessing() {
-        Date openTime = Config.getFacilityOpenTime();
+        LocalTime openTime = Config.getFacilityOpenTime();
 
         Order order;
         synchronized (synch) {
@@ -180,14 +187,15 @@ public class OrderProcessor {
      * @param currentTime the time
      * @return order to process
      */
-    private Order getNextOrder(Date currentTime) {
+    private Order getNextOrder(LocalTime currentTime) {
         Iterator<Order> iter = sortedOrderList.iterator();
         Order otp = null;
         while (iter.hasNext()) {
             Order currOrder = iter.next();
             //if the current time is greater than order with least transport time, chose the order
             //from sorted list (with least transport time) - first in sorted list
-            if (currentTime.compareTo(currOrder.getOrderPlaceTime()) >= 0) {
+            LocalTime opt = currOrder.getOrderPlaceTime();
+            if (currentTime.isAfter(opt) || currentTime.equals(opt)) {
                 logger.debug("Found Order: " + currOrder.getOrderId() + " Placed: " + currOrder.getOrderPlaceTime());
                 otp = currOrder;
                 break;

@@ -11,7 +11,7 @@ public class Location {
     final static Log logger = LogFactory.getLog(Location.class);
 
     private static DecimalFormat DEC_FORMAT = new DecimalFormat(".##");
-    private static final String LOCATION_PATTERN = "[NS]\\d+[EW]\\d+";
+    private static final String LOCATION_PATTERN = "[NS](\\d+)[EW](\\d+)";
 
     private static final int MAX_RADIUS = 480; //max travel time in north-south is 5:10 hours
     private static final float SPEED = 1.0f;

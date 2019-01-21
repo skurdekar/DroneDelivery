@@ -3,7 +3,7 @@ import com.dronedelivery.engine.OrderProcessor;
 import com.dronedelivery.model.RejectedOrder;
 import org.junit.Test;
 
-import java.util.Date;
+import java.time.LocalTime;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,8 +16,8 @@ public class DroneDeliveryAppTest {
         op.createOrder("WM002 S3E2 05:11:55" );
         op.process();
         assertEquals(op.getProcessedOrders().size(), 2);
-        assertEquals(op.getProcessedOrders().get(0).getDispatchTime(), getDateFromString("06:00:00"));
-        assertEquals(op.getProcessedOrders().get(1).getDispatchTime(), getDateFromString("06:07:13"));
+        assertEquals(op.getProcessedOrders().get(0).getDispatchTime(), LocalTime.parse("06:00:00"));
+        assertEquals(op.getProcessedOrders().get(1).getDispatchTime(), LocalTime.parse("06:07:13"));
         assertEquals(op.getNPS(), 100);
     }
 
@@ -117,13 +117,5 @@ public class DroneDeliveryAppTest {
         op.process();
         assertEquals(op.getRejectedOrders().get(0).getReason(), RejectedOrder.RejectReason.DUPICATE_ID);
         assertEquals(op.getProcessedOrders().size(), 1);
-    }
-
-    private static Date getDateFromString(String dateStr) {
-        try {
-            return Config.TIME_FORMAT.parse(dateStr);
-        }catch(Exception ignore){
-        }
-        return null;
     }
 }

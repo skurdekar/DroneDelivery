@@ -4,15 +4,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Config {
 
-    final static Log logger = LogFactory.getLog(Config.class);
+    private final static Log logger = LogFactory.getLog(Config.class);
 
     private static int NUM_DRONES = 1;
-    public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    //public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    public static DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     private static final String OPEN_TIME_STR = "06:00:00";
     private static final String CLOSE_TIME_STR = "22:00:00";
 
@@ -21,17 +23,17 @@ public class Config {
     private static final String OUTPUT_FILE = OUTPUT_PATH + "droneDeliveryOut.txt";
     private static final String REJECT_FILE = OUTPUT_PATH + "droneDeliveryRejects.txt";
 
-    private static Date OPEN_TIME;
-    private static Date CLOSE_TIME;
+    private static LocalTime OPEN_TIME;
+    private static LocalTime CLOSE_TIME;
 
     //set facility open and close times
     static {
         try {
-            OPEN_TIME = TIME_FORMAT.parse(OPEN_TIME_STR);
+            OPEN_TIME = LocalTime.parse(OPEN_TIME_STR);
         } catch (Exception ex) {
         }
         try {
-            CLOSE_TIME = TIME_FORMAT.parse(CLOSE_TIME_STR);
+            CLOSE_TIME = LocalTime.parse(CLOSE_TIME_STR);
         } catch (Exception ex) {
         }
     }
@@ -74,11 +76,9 @@ public class Config {
         logger.info("num drones: " + NUM_DRONES);
     }
 
-    public static Date getFacilityOpenTime() {
-        return (Date) OPEN_TIME.clone();
+    public static LocalTime getFacilityOpenTime() {
+        return OPEN_TIME;
     }
 
-    public static Date getFacilityCloseTime() {
-        return (Date) CLOSE_TIME.clone();
-    }
+    public static LocalTime getFacilityCloseTime() { return CLOSE_TIME; }
 }

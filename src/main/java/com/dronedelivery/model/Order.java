@@ -1,26 +1,27 @@
 package com.dronedelivery.model;
 
 import com.dronedelivery.config.Config;
-import com.dronedelivery.util.DroneDeliveryUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 public class Order {
     private final static Log logger = LogFactory.getLog(Order.class);
 
-    private static final String ORDER_PATTERN = "WM\\d+";
+    public static final String ORDER_PATTERN = "WM(\\d+)";
+    public static final String TIME_PATTERN = "(\\d+):(\\d+):(\\d+)";
+
     private String orderId;
-    private Location location;
-    private Date orderPlaceTime;
     private String orderStr;
-    private Date dispatchTime;
-    private Date deliveryTime;
-    private Date returnTime;
+    private Location location;
+    private LocalTime orderPlaceTime;
+    private LocalTime dispatchTime;
+    private LocalTime deliveryTime;
+    private LocalTime returnTime;
     private int transportTime;
     private float score;
     private String droneId;
@@ -33,7 +34,7 @@ public class Order {
      * @param location       delivery location
      * @param orderPlaceTime time order was placed
      */
-    public Order(String orderId, String location, Date orderPlaceTime, String orderStr) {
+    public Order(String orderId, String location, LocalTime orderPlaceTime, String orderStr) {
         boolean isValid = Pattern.matches(ORDER_PATTERN, orderId);
         if (!isValid) {
             throw new IllegalArgumentException(RejectedOrder.RejectReason.INVALID_ID.toString());
@@ -66,15 +67,15 @@ public class Order {
         return orderId;
     }
 
-    public Date getOrderPlaceTime() {
+    public LocalTime getOrderPlaceTime() {
         return orderPlaceTime;
     }
 
-    public Date getDispatchTime() {
+    public LocalTime getDispatchTime() {
         return dispatchTime;
     }
 
-    public Date getDroneReturnTime() {
+    public LocalTime getDroneReturnTime() {
         return returnTime;
     }
 
@@ -93,43 +94,38 @@ public class Order {
      * @return true/false if the delivery was scheduled
      */
     public boolean scheduleDelivery(Order prevOrder) {
-        if (orderPlaceTime.compareTo(Config.getFacilityCloseTime()) > 0) {
+        if (orderPlaceTime.isAfter(Config.getFacilityCloseTime())) {
             rejectReason = RejectedOrder.RejectReason.FACILITY_CLOSED;
             return false;
         }
 
-        Calendar cal = Calendar.getInstance();
         dispatchTime = Config.getFacilityOpenTime();//if no previous order exists
         if (prevOrder != null) {//add 1 second to previous drone return time
-            cal.setTime(prevOrder.getDroneReturnTime());
-            cal.add(Calendar.SECOND, 1);
-            dispatchTime = cal.getTime();//set dispatch time
+            dispatchTime = prevOrder.getDroneReturnTime().plusSeconds(1);
         }
         //edge case. If the order has been placed after facility opens reset dispatch time
-        if (orderPlaceTime.compareTo(dispatchTime) > 0) {
+        if (orderPlaceTime.isAfter(dispatchTime)) {
             dispatchTime = orderPlaceTime;
         }
 
         //set delivery and return times
-        cal.setTime(dispatchTime);
-        cal.add(Calendar.SECOND, location.getTransportTimeInSeconds());
-        deliveryTime = cal.getTime();//set delivery time
-        cal.add(Calendar.SECOND, location.getTransportTimeInSeconds());
-        returnTime = cal.getTime();//set return time
+        deliveryTime = dispatchTime.plusSeconds(location.getTransportTimeInSeconds());
+        returnTime = deliveryTime.plusSeconds(location.getTransportTimeInSeconds());//set return time
         //make sure drone can return before drone facility closes. If not reject
-        if (returnTime.compareTo(Config.getFacilityCloseTime()) > 0) {
+        if (returnTime.isAfter(Config.getFacilityCloseTime())) {
             returnTime = dispatchTime = null;
             rejectReason = RejectedOrder.RejectReason.DESTINATION_TOO_FAR;
             return false;
         }
         droneId = Thread.currentThread().getName();
+
         //calculate Score
         calculateScore();
         return true;
     }
 
     public String toString() {
-        SimpleDateFormat fmt = Config.TIME_FORMAT;
+        DateTimeFormatter fmt = Config.TIME_FORMAT;
         return "OrderId: " + orderId + " PlaceTime: " + fmt.format(orderPlaceTime) +
                 " TransportTime: " + Time.getTime(transportTime) +
                 " DispatchTime: " + fmt.format(dispatchTime) + " DeliveryTime: " + fmt.format(deliveryTime) +
@@ -137,7 +133,7 @@ public class Order {
     }
 
     public String getFileOutput() {
-        return droneId + " " + orderId + " " + Config.TIME_FORMAT.format(dispatchTime);
+        return String.format("%s %s %s", droneId, orderId, Config.TIME_FORMAT.format(dispatchTime));
     }
 
     /**
@@ -152,8 +148,8 @@ public class Order {
      * Calculate local score for this order
      */
     private void calculateScore() {
-        int deliveryTimeInt = DroneDeliveryUtils.getDifferenceInSeconds(deliveryTime, orderPlaceTime).getTotalSeconds();
-        float hours = deliveryTimeInt / 3600f;
+        long deliveryTimeLong = (int)orderPlaceTime.until(deliveryTime, SECONDS);
+        float hours = deliveryTimeLong / 3600f;
         score = 10 - hours;
         if (score < 0) {
             score = 0;
