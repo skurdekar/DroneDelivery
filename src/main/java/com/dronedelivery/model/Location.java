@@ -21,18 +21,20 @@ public class Location {
 
     /**
      * Constructor
+     *
      * @param location location string
      */
-    public Location(String location){
+    public Location(String location) {
         this.location = location;
         transportTimeInSeconds = _getTransportTime();
     }
 
     /**
      * Time it takes for the drone to make a delivery to this location(seconds)
+     *
      * @return drone delivery time
      */
-    public int getTransportTimeInSeconds(){
+    public int getTransportTimeInSeconds() {
         return transportTimeInSeconds;
     }
 
@@ -42,9 +44,9 @@ public class Location {
      *
      * @return time rounded to 2 decimals
      */
-    private int _getTransportTime(){
+    private int _getTransportTime() {
         boolean isValid = Pattern.matches(LOCATION_PATTERN, location);
-        if(!isValid) {
+        if (!isValid) {
             throw new IllegalArgumentException(RejectedOrder.RejectReason.INVALID_LOCATION.toString());
         }
 
@@ -55,15 +57,15 @@ public class Location {
         final Matcher matched = integerPattern.matcher(location);
         while (matched.find()) {
             int blocks = Integer.valueOf(matched.group());
-            if(blocks < 0){
+            if (blocks < 0) {
                 throw new IllegalArgumentException(RejectedOrder.RejectReason.INVALID_LOCATION.toString());
             }
-            float minutes = blocks*SPEED;
+            float minutes = blocks * SPEED;
             squareMinutes += Math.pow(minutes, 2);
         }
 
-        if(squareMinutes < Math.pow(MAX_RADIUS, 2)) {
-            long squareSecs = squareMinutes*3600; //convert to sec sq
+        if (squareMinutes < Math.pow(MAX_RADIUS, 2)) {
+            long squareSecs = squareMinutes * 3600; //convert to sec sq
             retVal = Float.valueOf(DEC_FORMAT.format(Math.sqrt(squareSecs)));
             //logger.debug("Location: " + location + " transport time(secs): " + retVal);
         } else {

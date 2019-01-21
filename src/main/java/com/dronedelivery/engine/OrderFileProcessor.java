@@ -17,14 +17,17 @@ public class OrderFileProcessor {
 
     private final static Log logger = LogFactory.getLog(OrderProcessor.class);
     private static OrderFileProcessor instance = new OrderFileProcessor();
+
     public static OrderFileProcessor getInstance() {
         return instance;
     }
 
-    private OrderFileProcessor(){}
+    private OrderFileProcessor() {
+    }
 
     /**
      * Read input file
+     *
      * @throws Exception if file cannot be read
      */
     public void readOrderInput(OrderProcessor op) throws IOException {
@@ -33,7 +36,7 @@ public class OrderFileProcessor {
             String line;
             while ((line = br.readLine()) != null) {
                 // process each line.
-                if(!line.equals("") && !line.startsWith("#")) {//skip blank or commented lines
+                if (!line.equals("") && !line.startsWith("#")) {//skip blank or commented lines
                     op.createOrder(line);
                 }
             }
@@ -42,38 +45,40 @@ public class OrderFileProcessor {
 
     /**
      * Write output file
+     *
      * @param processedList ArrayList containing processed orders
      */
-    public void writeOrderOutput(ArrayList<Order> processedList, int NPS){
+    public void writeOrderOutput(ArrayList<Order> processedList, int NPS) {
         String outputFilePath = Config.getOutputFilePath();
         File of = new File(outputFilePath);
-        if(!of.exists()){//make sure directory exists
+        if (!of.exists()) {//make sure directory exists
             of.mkdir();
         }
-        try (PrintWriter writer = new PrintWriter(Config.getOutputFile())){
-            for(Order order: processedList) {
+        try (PrintWriter writer = new PrintWriter(Config.getOutputFile())) {
+            for (Order order : processedList) {
                 writer.write(order.getFileOutput() + "\n");
             }
             writer.write("NPS " + NPS + "\n");
             logger.info("DroneDelivery: successfully wrote output to " + Config.getOutputFile());
-        }catch(Exception ex){
+        } catch (Exception ex) {
             logger.error("Could not write to output file: " + Config.getOutputFile(), ex);
         }
     }
 
     /**
      * Write output file
+     *
      * @param rejectedList ArrayList containing processed orders
      */
-    public void writeOrderRejects(ArrayList<RejectedOrder> rejectedList){
-        try (PrintWriter writer = new PrintWriter(Config.getRejectFile())){
-            for(RejectedOrder order: rejectedList) {
+    public void writeOrderRejects(ArrayList<RejectedOrder> rejectedList) {
+        try (PrintWriter writer = new PrintWriter(Config.getRejectFile())) {
+            for (RejectedOrder order : rejectedList) {
                 writer.write(order + "\n");
             }
-            if(rejectedList.size() > 0) {
+            if (rejectedList.size() > 0) {
                 logger.info("DroneDelivery: successfully wrote rejects to " + Config.getRejectFile());
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             logger.error("Could not write to rejects file: " + Config.getRejectFile(), ex);
         }
     }

@@ -25,14 +25,14 @@ public class Config {
     private static Date CLOSE_TIME;
 
     //set facility open and close times
-    static{
-        try{
+    static {
+        try {
             OPEN_TIME = TIME_FORMAT.parse(OPEN_TIME_STR);
-        }catch(Exception ex){
+        } catch (Exception ex) {
         }
-        try{
+        try {
             CLOSE_TIME = TIME_FORMAT.parse(CLOSE_TIME_STR);
-        }catch(Exception ex){
+        } catch (Exception ex) {
         }
     }
 
@@ -48,32 +48,37 @@ public class Config {
         return REJECT_FILE;
     }
 
-    public static String getOutputFile() { return OUTPUT_FILE; }
+    public static String getOutputFile() {
+        return OUTPUT_FILE;
+    }
 
-    public static int getNumDrones() { return NUM_DRONES; }
+    public static int getNumDrones() {
+        return NUM_DRONES;
+    }
 
-    public static void parseCommandLine(String args[]){
-        if(args.length < 1){
+    public static void parseCommandLine(String args[]) {
+        if (args.length < 1) {
             throw new IllegalArgumentException("Please provide input file path");
         }
         INPUT_PATH = args[0];
-        if(args.length == 2) {
+        if (args.length == 2) {
             try {
                 int numDrones = Integer.valueOf(args[1]);
-                NUM_DRONES = numDrones < 1 ? 1: numDrones;
-                NUM_DRONES = numDrones > 10 ? 10: numDrones;
-            }catch(Exception ignore){}
+                NUM_DRONES = numDrones < 1 ? 1 : numDrones;
+                NUM_DRONES = numDrones > 10 ? 10 : numDrones;
+            } catch (Exception ignore) {
+            }
         }
         logger.info("parseCommandLine: input file: " + INPUT_PATH);
         logger.info("output file path: " + OUTPUT_PATH);
         logger.info("num drones: " + NUM_DRONES);
     }
 
-    public static Date getFacilityOpenTime(){
-        return (Date)OPEN_TIME.clone();
+    public static Date getFacilityOpenTime() {
+        return (Date) OPEN_TIME.clone();
     }
 
-    public static Date getFacilityCloseTime(){
-        return (Date)CLOSE_TIME.clone();
+    public static Date getFacilityCloseTime() {
+        return (Date) CLOSE_TIME.clone();
     }
 }

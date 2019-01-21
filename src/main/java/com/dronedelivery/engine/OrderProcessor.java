@@ -87,7 +87,7 @@ public class OrderProcessor {
         for (Thread t : threadList) {
             try {
                 t.join();
-            }catch(InterruptedException ex){
+            } catch (InterruptedException ex) {
                 logger.error("Thread interrupted " + t.getName());
             }
         }
@@ -95,6 +95,7 @@ public class OrderProcessor {
             calculateNPS();
         }
     }
+
     /**
      * Start order processing. Will Go through order list and try to schedule the order
      */
@@ -246,6 +247,7 @@ public class OrderProcessor {
     class OrderRunner implements Runnable {
         OrderProcessor processor;
         int index;
+
         OrderRunner(OrderProcessor processor, int index) {
             this.processor = processor;
             this.index = index;

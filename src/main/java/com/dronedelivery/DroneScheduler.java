@@ -11,9 +11,11 @@ import java.io.IOException;
 public class DroneScheduler {
     private final static Log logger = LogFactory.getLog(DroneScheduler.class);
     private static DroneScheduler instance = new DroneScheduler();
-    private DroneScheduler(){}
 
-    public static DroneScheduler getInstance(){
+    private DroneScheduler() {
+    }
+
+    public static DroneScheduler getInstance() {
         return instance;
     }
 
@@ -23,7 +25,7 @@ public class DroneScheduler {
             OrderFileProcessor.getInstance().readOrderInput(op);
             op.process();
             op.writeOutput();
-        }catch(IOException ex){
+        } catch (IOException ex) {
             logger.error("Could not read input file", ex);
         }
     }
@@ -33,7 +35,7 @@ public class DroneScheduler {
         try {
             Config.parseCommandLine(argv);
             DroneScheduler.getInstance().startScheduler();
-        }catch(Exception ex){
+        } catch (Exception ex) {
             logger.error("Could not start Drone Scheduler", ex);
             System.exit(1);
         }

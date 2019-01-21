@@ -9,9 +9,9 @@ public class RejectedOrder {
             return name();
         }
 
-        public static RejectReason fromString(String reasonCode){
-            for(RejectReason rr: RejectReason.values()){
-                if(rr.toString().equals(reasonCode)){
+        public static RejectReason fromString(String reasonCode) {
+            for (RejectReason rr : RejectReason.values()) {
+                if (rr.toString().equals(reasonCode)) {
                     return rr;
                 }
             }
@@ -23,19 +23,19 @@ public class RejectedOrder {
     private String orderStr;
 
     public RejectedOrder(RejectReason rejectReason, String orderStr) {
-        if(rejectReason != null) {
+        if (rejectReason != null) {
             this.rejectReason = rejectReason;
-        }else{
+        } else {
             this.rejectReason = RejectReason.UNKNOWN;
         }
         this.orderStr = orderStr;
     }
 
-    public RejectReason getReason(){
+    public RejectReason getReason() {
         return rejectReason;
     }
 
-    public String toString(){
+    public String toString() {
         return "Order Rejected: " + rejectReason + " : " + orderStr;
     }
 }
