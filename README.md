@@ -31,8 +31,10 @@ The application is packaged with the Gradle Build Tool. It can be built using th
 - `./gradlew clean build`
 
 The application can be run as follows (using sample or user provided input)
-- `./gradlew run --args=<filepath>`
-- `./gradlew run --args='droneOrderInput.txt'`
+- `./gradlew run --args=<filepath> numdrones`
+
+To start the processor with 3 drones. The number of drones is defaulted to 1 if no parameter is provided.
+- `./gradlew run --args='droneOrderInput.txt 3'`
 
 Input file lines starting with `#` are considered to be comments and ignored.
 
