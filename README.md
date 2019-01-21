@@ -31,8 +31,10 @@ The application is packaged with the Gradle Build Tool. It can be built using th
 - `./gradlew clean build`
 
 The application can be run as follows (using sample or user provided input)
-- `./gradlew run --args=<filepath>`
-- `./gradlew run --args='droneOrderInput.txt'`
+- `./gradlew run --args='<filepath> numdrones'`
+
+The number of drones is defaulted to 1 if no parameter is provided. The maximum number of drones that can be run in parallel are 10.
+- `./gradlew run --args='droneOrderInput.txt 3'`
 
 Input file lines starting with `#` are considered to be comments and ignored.
 
@@ -43,7 +45,7 @@ Alternatively the application can be packaged as a fat jar
 - `./gradlew clean build fatJar`
 
 Once packaged as a fat jar it can be run as a standalone java application
-- `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath>`
+- `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath> numdrones`
 
 ## Example Output
 
@@ -117,6 +119,7 @@ If the file contains bad data the order will be rejected and count against NPS c
 NPS Calculation will be done using the following formula
 `promoterCount/sampleSize*100 - detractorCount/sampleSize*100`
 Passive responses (7,8) will count towards sample size. Samplesize = promoterCount + detractorCount + passiveCount
+```For the provided sample input, the NPS starts at -45 for 1 drone processor and tops off at 96 for 10 drones. Adding additional drones significantly improves the NPS (per drone added).```
 
 ### Error handling
 There is minimal error handling implemented in the application which is in no way indicative of how an application should handle edge cases, bad data and erroneous conditions in production. 
