@@ -14,7 +14,7 @@ public class DroneDeliveryAppTest {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N11W5 05:11:50" );
         op.createOrder("WM002 S3E2 05:11:55" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 2);
         assertEquals(op.getProcessedOrders().get(0).getDispatchTime(), getDateFromString("06:00:00"));
         assertEquals(op.getProcessedOrders().get(1).getDispatchTime(), getDateFromString("06:07:13"));
@@ -25,7 +25,7 @@ public class DroneDeliveryAppTest {
     public void testInvalidOrderParam() {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 05:11:50" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 0);
         assertEquals(op.getRejectedOrders().size(), 1);
         assertEquals(op.getRejectedOrders().get(0).getReason(), RejectedOrder.RejectReason.INVALID_PARAMS);
@@ -36,7 +36,7 @@ public class DroneDeliveryAppTest {
     public void testDestinationTooFar() {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N300W500 05:11:50" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 0);
         assertEquals(op.getRejectedOrders().size(), 1);
         assertEquals(op.getRejectedOrders().get(0).getReason(), RejectedOrder.RejectReason.DESTINATION_TOO_FAR);
@@ -46,7 +46,7 @@ public class DroneDeliveryAppTest {
     public void facilityClosed() {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N30W50 22:11:50" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 0);
         assertEquals(op.getRejectedOrders().size(), 1);
         assertEquals(op.getRejectedOrders().get(0).getReason(), RejectedOrder.RejectReason.FACILITY_CLOSED);
@@ -57,7 +57,7 @@ public class DroneDeliveryAppTest {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N11W5 05:11:50" );
         op.createOrder("WM002 S3E2 05:25:55" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 2);
         assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM002");
         assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM001");
@@ -69,7 +69,7 @@ public class DroneDeliveryAppTest {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N11W5 10:11:50" );
         op.createOrder("WM002 S3E2 05:25:55" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 2);
         assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM002");
         assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM001");
@@ -80,7 +80,7 @@ public class DroneDeliveryAppTest {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N11W5 05:11:50" );
         op.createOrder("WM002 S3E2 06:12:55" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 2);
         assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM001");
         assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM002");
@@ -94,7 +94,7 @@ public class DroneDeliveryAppTest {
         op.createOrder("WM002 S1E1 06:02:55" );
         op.createOrder("WM003 S3E3 06:04:55" );
         op.createOrder("WM004 S3E2 06:12:55" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getProcessedOrders().size(), 4);
         assertEquals(op.getProcessedOrders().get(0).getOrderId(), "WM001");
         assertEquals(op.getProcessedOrders().get(1).getOrderId(), "WM002");
@@ -105,7 +105,7 @@ public class DroneDeliveryAppTest {
     public void testInvalidLocation() {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 A11W5 06:11:50" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getRejectedOrders().get(0).getReason(), RejectedOrder.RejectReason.INVALID_LOCATION);
     }
 
@@ -114,7 +114,7 @@ public class DroneDeliveryAppTest {
         OrderProcessor op = new OrderProcessor();
         op.createOrder("WM001 N11W5 06:11:50" );
         op.createOrder("WM001 N11W5 06:11:50" );
-        op.startProcessing();
+        op.process();
         assertEquals(op.getRejectedOrders().get(0).getReason(), RejectedOrder.RejectReason.DUPICATE_ID);
         assertEquals(op.getProcessedOrders().size(), 1);
     }

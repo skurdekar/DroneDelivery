@@ -21,7 +21,7 @@ public class DroneScheduler {
         OrderProcessor op = new OrderProcessor();
         try {
             OrderFileProcessor.getInstance().readOrderInput(op);
-            op.startProcessing();
+            op.process();
             op.writeOutput();
         }catch(IOException ex){
             logger.error("Could not read input file", ex);

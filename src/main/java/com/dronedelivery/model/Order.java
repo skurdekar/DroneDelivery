@@ -23,6 +23,7 @@ public class Order {
     private Date returnTime;
     private int transportTime;
     private float score;
+    private String droneId;
     private RejectedOrder.RejectReason rejectReason = null;
 
     /**
@@ -118,7 +119,7 @@ public class Order {
             rejectReason = RejectedOrder.RejectReason.DESTINATION_TOO_FAR;
             return false;
         }
-
+        droneId = Thread.currentThread().getName();
         //calculate Score
         calculateScore();
         return true;
@@ -133,14 +134,13 @@ public class Order {
     }
 
     public String getFileOutput(){
-        return orderId + " " + Config.TIME_FORMAT.format(dispatchTime);
+        return droneId + " " + orderId + " " + Config.TIME_FORMAT.format(dispatchTime);
     }
 
     /**
      * Initialize the fastest time it takes to deliver an order
      */
     private void initTransportTime(){
-        //int waitTime = DroneDeliveryUtils.getDifferenceInSeconds(Config.getFacilityOpenTime(), orderPlaceTime).getTotalSeconds();
         transportTime = location.getTransportTimeInSeconds();
         //logger.debug("OrderId: " + orderId + " Transport Time: " + Time.getTime(transportTime));
     }
@@ -159,10 +159,6 @@ public class Order {
             score = 10;
         }
         //logger.debug("OrderId: " + orderId + " Score: " + score);
-    }
-
-    public float getScore(){
-        return score;
     }
 
     public boolean isPromoter(){

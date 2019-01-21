@@ -11,6 +11,7 @@ public class Config {
 
     final static Log logger = LogFactory.getLog(Config.class);
 
+    private static int NUM_DRONES = 1;
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
     private static final String OPEN_TIME_STR = "06:00:00";
     private static final String CLOSE_TIME_STR = "22:00:00";
@@ -49,14 +50,23 @@ public class Config {
 
     public static String getOutputFile() { return OUTPUT_FILE; }
 
-    public static void parseCommandLine(String argv[]){
-        if(argv.length < 1){
+    public static int getNumDrones() { return NUM_DRONES; }
+
+    public static void parseCommandLine(String args[]){
+        if(args.length < 1){
             throw new IllegalArgumentException("Please provide input file path");
         }
-        INPUT_PATH = argv[0];
-        //OUTPUT_PATH = argv[1];
+        INPUT_PATH = args[0];
+        if(args.length == 2) {
+            try {
+                int numDrones = Integer.valueOf(args[1]);
+                NUM_DRONES = numDrones < 1 ? 1: numDrones;
+                NUM_DRONES = numDrones > 10 ? 10: numDrones;
+            }catch(Exception ignore){}
+        }
         logger.info("parseCommandLine: input file: " + INPUT_PATH);
         logger.info("output file path: " + OUTPUT_PATH);
+        logger.info("num drones: " + NUM_DRONES);
     }
 
     public static Date getFacilityOpenTime(){
