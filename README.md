@@ -45,7 +45,7 @@ Alternatively the application can be packaged as a fat jar
 - `./gradlew clean build fatJar`
 
 Once packaged as a fat jar it can be run as a standalone java application
-- `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath>`
+- `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath> numdrones`
 
 ## Example Output
 
