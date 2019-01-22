@@ -5,8 +5,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.regex.Pattern;
 
 public class Order {
@@ -124,12 +126,14 @@ public class Order {
         return true;
     }
 
+    public String getDroneId(){ return droneId;}
+
     public String toString() {
         DateTimeFormatter fmt = Config.TIME_FORMAT;
-        return "OrderId: " + orderId + " PlaceTime: " + fmt.format(orderPlaceTime) +
-                " TransportTime: " + Time.getTime(transportTime) +
-                " DispatchTime: " + fmt.format(dispatchTime) + " DeliveryTime: " + fmt.format(deliveryTime) +
-                " ReturnTime(+1): " + fmt.format(returnTime);
+        return String.join(" ","OrderId:", orderId, "PlaceTime:", fmt.format(orderPlaceTime),
+                "TransportTime:", location.getFormattedTransportTime(),
+                "DispatchTime:" , fmt.format(dispatchTime), "DeliveryTime:", fmt.format(deliveryTime),
+                "ReturnTime(+1):", fmt.format(returnTime));
     }
 
     public String getFileOutput() {

@@ -8,9 +8,11 @@ import org.apache.commons.logging.LogFactory;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class OrderProcessor {
     private final static Log logger = LogFactory.getLog(OrderProcessor.class);
@@ -19,6 +21,10 @@ public class OrderProcessor {
      * List of valid orders sorted by fastest Transport Time
      */
     private ArrayList<Order> sortedOrderList = new ArrayList<>();
+
+    /**
+     * List sorted by order place time
+     */
     private ArrayList<Order> orderList = new ArrayList<>();
 
     /**
@@ -30,12 +36,6 @@ public class OrderProcessor {
      * List of rejected orders
      */
     private ArrayList<RejectedOrder> rejectedList = new ArrayList<>();
-
-    /**
-     * Comparator to sort Order list
-     */
-    private OrderComparatorDlvryDuration comparator = new OrderComparatorDlvryDuration();
-    private OrderComparatorPlaceTime comparator1 = new OrderComparatorPlaceTime();
 
     /**
      * NPS Score
@@ -81,8 +81,9 @@ public class OrderProcessor {
     }
 
     public void process() {
-        sortedOrderList.sort(comparator);//sort by fastest delivery duration
-        orderList.sort(comparator1);//sort by earlier place time
+        sortedOrderList.sort(Comparator.comparingInt(Order::getTransportTime));//sort by fastest delivery duration
+        orderList.sort(Comparator.comparing(Order::getOrderPlaceTime));//sort by earlier place time
+
         ArrayList<Thread> threadList = new ArrayList<>(Config.getNumDrones());
         for (int i = 0; i < Config.getNumDrones(); i++) {
             threadList.add(new Thread(new OrderRunner(this, i)));
@@ -98,7 +99,10 @@ public class OrderProcessor {
             }
         }
         if (processedList.size() > 0) {
-            processedList.sort(new OrderComparatorDispatchTime());//make sure the file is sorted
+            processedList.sort(Comparator.comparing(Order::getDispatchTime));
+            Map<String, Long> droneProcessCount = processedList.stream()
+                    .map(Order::getDroneId).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            logger.debug("Drone Process Count :" + droneProcessCount);
             calculateNPS();
         }
     }
@@ -182,25 +186,17 @@ public class OrderProcessor {
     }
 
     /**
-     * Get next order to process
+     * Get next order to process. This method is not thread safe and should not be invoked directly from
+     * the processor threads
      *
      * @param currentTime the time
      * @return order to process
      */
     private Order getNextOrder(LocalTime currentTime) {
-        Iterator<Order> iter = sortedOrderList.iterator();
-        Order otp = null;
-        while (iter.hasNext()) {
-            Order currOrder = iter.next();
-            //if the current time is greater than order with least transport time, chose the order
-            //from sorted list (with least transport time) - first in sorted list
-            LocalTime opt = currOrder.getOrderPlaceTime();
-            if (currentTime.isAfter(opt) || currentTime.equals(opt)) {
-                logger.debug("Found Order: " + currOrder.getOrderId() + " Placed: " + currOrder.getOrderPlaceTime());
-                otp = currOrder;
-                break;
-            }
-        }
+        Order otp = sortedOrderList.stream()
+                .filter(o->currentTime.isAfter(o.getOrderPlaceTime()) || currentTime.equals(o.getOrderPlaceTime()))
+                .findAny()
+                .orElse(null);
 
         //get the order with the earliest order place time if no orders were found
         if (otp == null && !orderList.isEmpty()) {
@@ -220,6 +216,7 @@ public class OrderProcessor {
      */
     private void calculateNPS() {
         float promoterCount = 0, detractorCount = 0, passiveCount = 0;
+
         for (Order order : processedList) {
             if (order.isPromoter()) {
                 promoterCount++;

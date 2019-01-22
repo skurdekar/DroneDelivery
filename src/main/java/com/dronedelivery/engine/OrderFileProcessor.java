@@ -35,12 +35,8 @@ public class OrderFileProcessor {
     public void readOrderInput(OrderProcessor op) throws IOException {
         String inputFilePath = Config.getInputFilePath();
         try (Stream<String> stream = Files.lines(Paths.get(inputFilePath))) {
-            for (Object line : stream.toArray()) {
-                String lineStr = (String)line;
-                if (!lineStr.equals("") && !lineStr.startsWith("#")) {//skip blank or commented lines
-                    op.createOrder(lineStr);
-                }
-            }
+            stream.filter(lineStr-> !lineStr.equals("") && !lineStr.startsWith("#"))
+                    .forEach(op::createOrder);
         }
     }
 

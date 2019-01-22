@@ -38,6 +38,12 @@ public class Location {
         return transportTimeInSeconds;
     }
 
+    public String getFormattedTransportTime() {
+        return String.format("%d:%02d:%02d",
+                transportTimeInSeconds / 3600,
+                (transportTimeInSeconds % 3600) / 60,
+                (transportTimeInSeconds % 60));
+    }
     /**
      * Returns the time (in seconds) it takes for the drone to deliver to a particular location
      * based on location passed in
@@ -74,7 +80,4 @@ public class Location {
         return Math.round(retVal); //round to nearest integer
     }
 
-    /*public static void main(String argv[]) {
-        Location loc = new Location("NN10E5");
-    }*/
 }
