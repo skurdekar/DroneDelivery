@@ -33,9 +33,9 @@ The application is packaged with the Gradle Build Tool. It can be built using th
 The application can be run as follows (using sample or user provided input)
 - `./gradlew run --args='-f <filepath> -nd <numdrones> -no <numorders> -g'`
 
-##### `-f` path of the input file (mandatory parameter)
-##### `-g` generate random input file at specified path
-##### `-no` number of simulated orders in input file (1-500)
+##### `-f` path of the input file (mandatory)
+##### `-g` generate random input file at specified path with the below specified parameters (optional)
+##### `-no` number of simulated orders in input file (optional 1-500)
 ##### `-nd` number of drones for parallel processing (1-10)
 ##### `-bb` max number of blocks to traverse for sample data set (1-20)
 
