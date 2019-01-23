@@ -31,10 +31,15 @@ The application is packaged with the Gradle Build Tool. It can be built using th
 - `./gradlew clean build`
 
 The application can be run as follows (using sample or user provided input)
-- `./gradlew run --args='<filepath> numdrones'`
+- `./gradlew run --args='-f <filepath> nd <numdrones> no <numorders> g'`
+
+`-f` path of the input file (mandatory parameter)
+`-g` generate random input file at specified path
+`-no` number of orders in generated input file
+`-nd` number of drones for parallel processing
 
 The number of drones is defaulted to 1 if no parameter is provided. The maximum number of drones that can be run in parallel are 10.
-- `./gradlew run --args='droneOrderInput.txt 3'`
+- `./gradlew run --args='-f droneOrderInput.txt 3'`
 
 Input file lines starting with `#` are considered to be comments and ignored.
 
@@ -45,7 +50,7 @@ Alternatively the application can be packaged as a fat jar
 - `./gradlew clean build fatJar`
 
 Once packaged as a fat jar it can be run as a standalone java application
-- `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler <inputFilePath> numdrones`
+- `java -classpath build/libs/dronedelivery-all-1.0-SNAPSHOT.jar com.dronedelivery.DroneScheduler -f <inputFilePath> -nd numdrones`
 
 ## Example Output
 
