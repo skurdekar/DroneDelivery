@@ -6,7 +6,9 @@ import com.dronedelivery.model.RejectedOrder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,13 +21,11 @@ public class OrderFileProcessor {
 
     private final static Log logger = LogFactory.getLog(OrderProcessor.class);
     private static OrderFileProcessor instance = new OrderFileProcessor();
-
     public static OrderFileProcessor getInstance() {
         return instance;
     }
 
-    private OrderFileProcessor() {
-    }
+    private OrderFileProcessor() { }
 
     /**
      * Read input file
@@ -52,9 +52,8 @@ public class OrderFileProcessor {
             of.mkdir();
         }
         try (PrintWriter writer = new PrintWriter(Config.getOutputFile())) {
-            for (Order order : processedList) {
-                writer.write(order.getFileOutput() + "\n");
-            }
+            processedList.forEach(order-> writer.write(
+                    order.getFileOutput() + "\n"));
             writer.write("NPS " + NPS + "\n");
             logger.info("DroneDelivery: successfully wrote output to " + Config.getOutputFile());
         } catch (Exception ex) {
@@ -69,9 +68,7 @@ public class OrderFileProcessor {
      */
     public void writeOrderRejects(ArrayList<RejectedOrder> rejectedList) {
         try (PrintWriter writer = new PrintWriter(Config.getRejectFile())) {
-            for (RejectedOrder order : rejectedList) {
-                writer.write(order + "\n");
-            }
+            rejectedList.forEach(order->writer.write(order + "\n"));
             if (rejectedList.size() > 0) {
                 logger.info("DroneDelivery: successfully wrote rejects to " + Config.getRejectFile());
             }
@@ -79,5 +76,4 @@ public class OrderFileProcessor {
             logger.error("Could not write to rejects file: " + Config.getRejectFile(), ex);
         }
     }
-
 }

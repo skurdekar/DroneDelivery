@@ -1,5 +1,7 @@
 package com.dronedelivery.config;
 
+import com.dronedelivery.simulator.OrderSimulator;
+import org.apache.commons.cli.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -58,22 +60,76 @@ public class Config {
         return NUM_DRONES;
     }
 
+    private static Options generateOptions() {
+        final Option verboseOption = Option.builder("g")
+                .required(false)
+                .hasArg(false)
+                .longOpt("genfile")
+                .desc("Generate input file.")
+                .build();
+
+        final Option fileOption = Option.builder("f")
+                .required(true)
+                .longOpt("inputfile")
+                .hasArg(true)
+                .desc("Input file path.")
+                .build();
+
+        final Option numdrones = Option.builder("nd")
+                .required(false)
+                .type(Integer.class)
+                .longOpt("numdrones")
+                .hasArg(true)
+                .desc("Drone Count")
+                .build();
+
+        final Option numorders = Option.builder("no")
+                .required(false)
+                .type(Integer.class)
+                .longOpt("numorders")
+                .hasArg(true)
+                .desc("Order Count")
+                .build();
+
+        final Options options = new Options();
+        options.addOption(verboseOption);
+        options.addOption(fileOption);
+        options.addOption(numdrones);
+        options.addOption(numorders);
+
+        return options;
+    }
+
     public static void parseCommandLine(String args[]) {
-        if (args.length < 1) {
-            throw new IllegalArgumentException("Please provide input file path");
-        }
-        INPUT_PATH = args[0];
-        if (args.length == 2) {
-            try {
-                int numDrones = Integer.valueOf(args[1]);
-                NUM_DRONES = numDrones < 1 ? 1 : numDrones;
-                NUM_DRONES = numDrones > 10 ? 10 : numDrones;
-            } catch (Exception ignore) {
+        CommandLineParser parser = new DefaultParser();
+        try {
+            CommandLine cmd = parser.parse(generateOptions(), args);
+            INPUT_PATH = cmd.getOptionValue('f');
+            logger.info("parseCommandLine: input file: " + INPUT_PATH);
+            if(cmd.hasOption("nd")){
+                try {
+                    int numDrones = Integer.valueOf(cmd.getOptionValue("nd"));
+                    NUM_DRONES = numDrones < 1 ? 1 : numDrones;
+                    NUM_DRONES = numDrones > 10 ? 10 : numDrones;
+                    logger.info("num drones: " + NUM_DRONES);
+                } catch (Exception ignore) { }
             }
+            if(cmd.hasOption("no")){
+                try {
+                    int numOrders = Integer.valueOf(cmd.getOptionValue("no"));
+                    OrderSimulator.NUM_ORDERS = numOrders < 1 ? 1 : numOrders;
+                    OrderSimulator.NUM_ORDERS = numOrders > 500 ? 500 : numOrders;
+                    logger.info("num simulated orders: " + OrderSimulator.NUM_ORDERS);
+                } catch (Exception ignore) { }
+            }
+            if(cmd.hasOption('g')){
+                OrderSimulator.writeOrdersToFile();
+            }
+        }catch(Exception ex){
+            logger.error("Error parsing command line ", ex);
+            System.exit(1);
         }
-        logger.info("parseCommandLine: input file: " + INPUT_PATH);
         logger.info("output file path: " + OUTPUT_PATH);
-        logger.info("num drones: " + NUM_DRONES);
     }
 
     public static LocalTime getFacilityOpenTime() {
