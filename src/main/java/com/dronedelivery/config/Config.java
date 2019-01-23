@@ -91,11 +91,20 @@ public class Config {
                 .desc("Order Count")
                 .build();
 
+        final Option blockbounds = Option.builder("bb")
+                .required(false)
+                .type(Integer.class)
+                .longOpt("numblocks")
+                .hasArg(true)
+                .desc("Max blocks")
+                .build();
+
         final Options options = new Options();
         options.addOption(verboseOption);
         options.addOption(fileOption);
         options.addOption(numdrones);
         options.addOption(numorders);
+        options.addOption(blockbounds);
 
         return options;
     }
@@ -120,6 +129,14 @@ public class Config {
                     OrderSimulator.NUM_ORDERS = numOrders < 1 ? 1 : numOrders;
                     OrderSimulator.NUM_ORDERS = numOrders > 500 ? 500 : numOrders;
                     logger.info("num simulated orders: " + OrderSimulator.NUM_ORDERS);
+                } catch (Exception ignore) { }
+            }
+            if(cmd.hasOption("bb")){
+                try {
+                    int blockBounds = Integer.valueOf(cmd.getOptionValue("bb"));
+                    OrderSimulator.BLOCK_BOUNDS = blockBounds < 1 ? 1 : blockBounds;
+                    OrderSimulator.BLOCK_BOUNDS = blockBounds > 20 ? 20 : blockBounds;
+                    logger.info("Block bounds: " + OrderSimulator.BLOCK_BOUNDS);
                 } catch (Exception ignore) { }
             }
             if(cmd.hasOption('g')){

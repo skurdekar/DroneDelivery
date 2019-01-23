@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class OrderSimulator {
     private final static Log logger = LogFactory.getLog(OrderSimulator.class);
-    private final static int BLOCK_BOUNDS = 10;
+    public static int BLOCK_BOUNDS = 10;
     public static int NUM_ORDERS = 500;
     private static final Random random = new Random();
 
