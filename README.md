@@ -36,7 +36,7 @@ The application can be run as follows (using sample or user provided input)
 ##### `-f` path of the input file (mandatory)
 ##### `-g` generate random input file at specified path with the below specified parameters (optional)
 ##### `-no` number of simulated orders in input file (optional 1-500)
-##### `-nd` number of drones for parallel processing (1-10)
+##### `-nd` number of drones for parallel processing (1-15)
 ##### `-bb` max number of blocks to traverse for sample data set (1-20)
 
 The number of drones is defaulted to 1 if no parameter is provided. The maximum number of drones that can be run in parallel are 10.
