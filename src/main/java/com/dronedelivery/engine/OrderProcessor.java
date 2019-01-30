@@ -7,10 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -158,22 +155,20 @@ public class OrderProcessor {
 
     /**
      * Returns processed orders
-     * TODO Clone the list so original list is never returned
      *
      * @return List of processed orders
      */
-    public ArrayList<Order> getProcessedOrders() {
-        return processedList;
+    public List<Order> getProcessedOrders() {
+        return Collections.unmodifiableList(processedList);
     }
 
     /**
      * Returns rejected orders
-     * TODO Clone the list so original list is never returned
      *
      * @return List of rejected orders
      */
-    public ArrayList<RejectedOrder> getRejectedOrders() {
-        return rejectedList;
+    public List<RejectedOrder> getRejectedOrders() {
+        return Collections.unmodifiableList(rejectedList);
     }
 
     /**
