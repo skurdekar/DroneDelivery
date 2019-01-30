@@ -119,7 +119,7 @@ public class Config {
                 try {
                     int numDrones = Integer.valueOf(cmd.getOptionValue("nd"));
                     NUM_DRONES = numDrones < 1 ? 1 : numDrones;
-                    NUM_DRONES = numDrones > 10 ? 10 : numDrones;
+                    NUM_DRONES = numDrones > 15 ? 15 : numDrones;
                     logger.info("num drones: " + NUM_DRONES);
                 } catch (Exception ignore) { }
             }
