@@ -39,7 +39,7 @@ The application can be run as follows (using sample or user provided input)
 ##### `-nd` number of drones for parallel processing (1-15)
 ##### `-bb` max number of blocks to traverse for sample data set (1-20)
 
-The number of drones is defaulted to 1 if no parameter is provided. The maximum number of drones that can be run in parallel are 10.
+The number of drones is defaulted to 1 if no parameter is provided. The maximum number of drones that can be run in parallel are 15.
 - `./gradlew run --args='-f droneOrderInput.txt -nd 3'`
 
 Input file lines starting with `#` are considered to be comments and ignored.
